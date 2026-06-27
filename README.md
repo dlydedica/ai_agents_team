@@ -155,6 +155,19 @@ python team.py dashboard --port 8080
 
 Откройте `http://localhost:8000` — увидите статус задач и загрузку отделов.
 
+### Реальная оркестрация
+
+```bash
+# Запустить цепочку выполнения задачи
+python team.py orchestrate "Создать REST API на FastAPI + PostgreSQL"
+
+# Из JSON-файла
+python team.py orchestrate --file examples/task_example.json
+```
+
+Команда пройдёт по всем отделам в правильном порядке,
+создаст задачу в MCP-сервере и зафиксирует прогресс.
+
 ### Интеграция в другой проект
 
 ```bash
@@ -205,6 +218,8 @@ ai_agents_team/
 │   ├── server.py              # Сервер
 │   ├── task_store.py          # Хранилище задач
 │   └── README.md              # Документация
+├── mcp_server/          # Пакет-прокси для импорта из team.py
+│   └── __init__.py
 ├── integration/         # 🔗 Интеграция в другие проекты
 │   ├── orchestrator.agent.md  # Агент для VS Code Copilot
 │   ├── integrate.py           # Скрипт автоматической интеграции

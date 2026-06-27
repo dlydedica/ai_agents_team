@@ -1,0 +1,50 @@
+name: CI — AI DevCorp
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 🐍 Установка Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 📦 Установка зависимостей
+        run: |
+          python -m pip install --upgrade pip
+          pip install mcp portalocker
+          pip install flake8 pytest
+
+      - name: 🔍 Линтер (flake8)
+        run: |
+          flake8 mcp-server/ --count --max-complexity=15 --max-line-length=120 --statistics
+        continue-on-error: true
+
+      - name: 🧪 Тесты MCP-сервера
+        run: |
+          cd mcp-server && python test_task_store.py
+
+      - name: 🔍 Проверка импорта team.py
+        run: |
+          python -c "import sys; sys.path.insert(0, '.'); from team import list_departments, list_workflows, list_interactions; print('✅ team.py импортируется корректно')"
+
+      - name: 🔍 Проверка импорта дашборда
+        run: |
+          pip install fastapi uvicorn jinja2
+          python -c "import sys; sys.path.insert(0, '.'); from dashboard.app import app; print('✅ dashboard импортируется корректно')"
+
+      - name: ✅ Статус
+        run: |
+          echo "✅ Все проверки пройдены"

@@ -76,21 +76,68 @@ argument-hint: "Опишите задачу для AI-команды..."
 5. **Если задача неясна — уточни** — не начинай работу с неполными данными.
 6. **Работай на русском языке** — все общение с пользователем на русском.
 
+## Взаимодействие между отделами
+
+При координации используй протоколы из `ai_agents_team/interactions/`:
+
+### Handoff (передача между отделами)
+Каждый handoff — структурированный пакет (артефакты + контекст + решения).
+См. `ai_agents_team/interactions/handoffs/default.md`
+
+### События
+После завершения работы отдел публикует событие — следующий отдел забирает артефакт.
+См. `ai_agents_team/interactions/events.md`
+
+### Эскалация
+- Любой Head может эскалировать CEO
+- Споры Heads → Совет отделов
+См. `ai_agents_team/interactions/escalation.md`
+
+### Типовые handoff-цепи
+
+**Полный цикл:**
+```
+Product → Architecture → Development → QA → DevOps → Docs → CEO
+```
+
+**Хотфикс:**
+```
+Development → QA → DevOps → CEO
+```
+
+**С параллельной работой:**
+```
+Architecture ──► Development ──┐
+              └─► Design ──────┼──► QA ──► DevOps ──► CEO
+                              └─► Data ───┘
+```
+
 ## Структура ai_agents_team
 
 ```
 ai_agents_team/
 ├── orchestration/
-│   ├── ceo.md              # Этот файл (описание роли CEO)
-│   └── council.md          # Совет отделов
-├── departments/
-│   ├── product/README.md   # Отдел продукта
-│   ├── architecture/README.md
-│   ├── development/README.md
-│   ├── qa/README.md
-│   ├── devops/README.md
-│   ├── design/README.md
-│   └── docs/README.md
+│   ├── ceo.md              # 🧠 CEO
+│   └── council.md          # 🤝 Совет отделов
+├── departments/            # 🏢 13 отделов
+│   ├── product/            # 🏭 Product
+│   ├── architecture/       # 🏗️ Architecture
+│   ├── development/        # 💻 Development
+│   ├── qa/                 # 🧪 QA
+│   ├── devops/             # ⚙️ DevOps
+│   ├── design/             # 🎨 Design
+│   ├── docs/               # 📖 Docs
+│   ├── hr/                 # 👥 HR
+│   ├── security/           # 🛡️ Security
+│   ├── data/               # 📊 Data
+│   ├── rd/                 # 🔬 R&D
+│   ├── legal/              # ⚖️ Legal
+│   └── marketing/          # 📣 Marketing
+├── interactions/           # 🔄 Взаимодействие между отделами
+│   ├── README.md           # Модель взаимодействия
+│   ├── events.md           # Событийная модель
+│   ├── escalation.md       # Эскалация
+│   └── handoffs/           # Handoff-протоколы
 ├── workflows/
 │   ├── default.md          # Стандартный процесс
 │   └── emergency.md        # Срочный процесс

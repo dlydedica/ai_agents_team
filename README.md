@@ -178,6 +178,11 @@ ai_agents_team/
 │   ├── legal/           # ⚖️ Отдел юридического compliance
 │   └── marketing/       # 📣 Отдел маркетинга и продвижения
 ├── workflows/           # Процессы взаимодействия
+├── interactions/        # 🔄 Взаимодействие между отделами
+│   ├── README.md              # Модель взаимодействия
+│   ├── events.md              # Событийная модель
+│   ├── escalation.md          # Эскалация и конфликты
+│   └── handoffs/              # Handoff-протоколы
 ├── integration/         # 🔗 Интеграция в другие проекты
 │   ├── orchestrator.agent.md  # Агент для VS Code Copilot
 │   ├── integrate.py           # Скрипт автоматической интеграции

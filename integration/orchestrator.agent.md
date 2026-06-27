@@ -31,6 +31,32 @@ argument-hint: "Опишите задачу для AI-команды..."
 
 Детальное описание каждого отдела — в `ai_agents_team/departments/<отдел>/README.md`.
 
+## Делегирование через subagents
+
+У каждого отдела есть кастомный агент. Используй subagent для делегирования:
+- `product.agent.md` — анализ требований
+- `architecture.agent.md` — архитектура, ADR
+- `development.agent.md` — код
+- `qa.agent.md` — тестирование
+- `devops.agent.md` — CI/CD, деплой
+- `design.agent.md` — UI/UX
+- `docs.agent.md` — документация
+- `hr.agent.md` — развитие команды
+- `security.agent.md` — безопасность
+- `data.agent.md` — данные, ML
+- `rd.agent.md` — исследования, PoC
+- `legal.agent.md` — лицензии
+- `marketing.agent.md` — продвижение
+
+## MCP-координация
+
+Если доступен MCP-сервер `ai-agents-coordinator`, используй его:
+- `create_task` — создать задачу
+- `assign_to_department` — назначить отделу
+- `handoff` — передать следующему отделу
+- `complete_department_task` — завершить этап
+- `escalate` — эскалировать проблему
+
 ## Процесс работы
 
 ### Шаг 1: Анализ задачи

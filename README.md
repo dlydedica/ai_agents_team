@@ -183,6 +183,10 @@ ai_agents_team/
 │   ├── events.md              # Событийная модель
 │   ├── escalation.md          # Эскалация и конфликты
 │   └── handoffs/              # Handoff-протоколы
+├── mcp-server/          # 🤖 MCP-сервер координации
+│   ├── server.py              # Сервер
+│   ├── task_store.py          # Хранилище задач
+│   └── README.md              # Документация
 ├── integration/         # 🔗 Интеграция в другие проекты
 │   ├── orchestrator.agent.md  # Агент для VS Code Copilot
 │   ├── integrate.py           # Скрипт автоматической интеграции

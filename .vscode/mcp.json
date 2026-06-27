@@ -1,0 +1,10 @@
+{
+  "servers": {
+    "ai-agents-coordinator": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["${workspaceFolder}/mcp-server/server.py"],
+      "description": "🧠 Координатор AI-команды: управление задачами, handoff, эскалация"
+    }
+  }
+}

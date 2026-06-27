@@ -86,18 +86,39 @@ graph TD
 
 ## Быстрый старт
 
+### Локально (в этом репозитории)
+
 ```bash
-# Установка
-git clone https://github.com/dlydedica/ai_agents_team.git
-
-# Запуск задачи
-python team.py run "Создать микросервис для сокращения ссылок"
-
-# Список отделов и сотрудников
+# Список отделов
 python team.py list-departments
 
 # Информация об отделе
-python team.py department product
+python team.py department development
+
+# Запуск задачи (заглушка)
+python team.py run "Создать микросервис для сокращения ссылок"
+
+# Запуск задачи из файла
+python team.py run --file examples/task_example.json
+```
+
+### В Copilot Chat
+
+Просто откройте Copilot Chat и выберите агента **🧠 CEO — Оркестратор AI-команды** из выпадающего списка. Затем опишите задачу — Оркестратор сам проанализирует и распределит работу.
+
+### Интеграция в другой проект
+
+```bash
+# 1. Добавьте ai_agents_team в ваш проект
+cd /путь/к/вашему/проекту
+git submodule add https://github.com/dlydedica/ai_agents_team.git ai_agents_team
+
+# 2. Запустите скрипт интеграции
+python ai_agents_team/integration/integrate.py .
+
+# 3. Откройте проект в VS Code
+# 4. В Copilot Chat выберите "🧠 CEO — Оркестратор AI-команды"
+# 5. Опишите задачу
 ```
 
 ## Структура репозитория
@@ -116,8 +137,12 @@ ai_agents_team/
 │   ├── design/          # 🎨 Отдел дизайна
 │   └── docs/            # 📖 Отдел документации
 ├── workflows/           # Процессы взаимодействия
+├── integration/         # 🔗 Интеграция в другие проекты
+│   ├── orchestrator.agent.md  # Агент для VS Code Copilot
+│   ├── integrate.py           # Скрипт автоматической интеграции
+│   └── README.md              # Инструкция по интеграции
 ├── docs/                # Документация
 ├── examples/            # Примеры
-├── team.py              # Точка входа
+├── team.py              # Точка входа CLI
 └── README.md
 ```

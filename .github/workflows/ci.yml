@@ -35,7 +35,11 @@ jobs:
       - name: 🧪 Тесты MCP-сервера
         run: |
           cd mcp-server && python test_task_store.py
-          cd .. && python mcp-server/test_task_store_extended.py
+          python test_server.py
+
+      - name: 🛡️ Quality Gate — синтаксис всего Python
+        run: |
+          python team.py validate
 
       - name: 🔍 Проверка импорта team.py
         run: |

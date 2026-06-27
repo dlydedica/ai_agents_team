@@ -96,11 +96,6 @@ def load_data() -> dict:
         key=lambda x: x["count"],
         reverse=True,
     )
-            for dept_id in DEPARTMENT_EMOJI
-        ],
-        key=lambda x: x["count"],
-        reverse=True,
-    )
 
     return {
         "tasks": tasks,

@@ -62,6 +62,24 @@ def load_data() -> dict:
         total_departments_used.update(t.get("departments_plan", []))
         total_events += len(t.get("events", []))
 
+    # Per-department KPI
+    dept_kpi = {}
+    for dept_id in DEPARTMENT_EMOJI:
+        assigned = sum(1 for t in tasks.values() if dept_id in t.get("departments_plan", []))
+        completed = sum(1 for t in tasks.values() if dept_id in t.get("departments_completed", []))
+        escalated = sum(1 for t in tasks.values()
+                        if t.get("status") == "escalated"
+                        and dept_id in t.get("departments_plan", []))
+        success_rate = round((completed / max(assigned, 1)) * 100)
+        dept_kpi[dept_id] = {
+            "emoji": DEPARTMENT_EMOJI.get(dept_id, "📁"),
+            "label": DEPARTMENT_LABELS.get(dept_id, dept_id),
+            "assigned": assigned,
+            "completed": completed,
+            "escalated": escalated,
+            "success_rate": success_rate,
+        }
+
     dept_completion_rank = sorted(
         [
             {
@@ -73,6 +91,11 @@ def load_data() -> dict:
                     if dept_id in t.get("departments_completed", [])
                 ),
             }
+            for dept_id in DEPARTMENT_EMOJI
+        ],
+        key=lambda x: x["count"],
+        reverse=True,
+    )
             for dept_id in DEPARTMENT_EMOJI
         ],
         key=lambda x: x["count"],
@@ -114,6 +137,7 @@ def load_data() -> dict:
                 sum(len(t.get("departments_plan", [])) for t in tasks.values()) / max(len(tasks), 1), 1
             ),
         },
+        "dept_kpi": dept_kpi,
     }
 
 

@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  mcp-server:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/mcp-server/data
+      - ./memory:/app/memory/data
+    environment:
+      - PYTHONIOENCODING=utf-8
+
+  dashboard:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    command: ["python", "-m", "uvicorn", "dashboard.app:app", "--host", "0.0.0.0", "--port", "8080"]
+    volumes:
+      - ./data:/app/mcp-server/data
+    depends_on:
+      - mcp-server

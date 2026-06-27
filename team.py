@@ -14,6 +14,7 @@ AI Agents Team — Корпорация AI-агентов с организац�
     python team.py orchestrate --file task.json
     python team.py search "поисковый запрос"
     python team.py memory stats
+    python team.py delegate <task_id> <department>
 """
 
 import json
@@ -230,6 +231,73 @@ def _determine_departments(task: dict) -> list:
     deps_needed.append("docs")
 
     return deps_needed
+
+
+def delegate(task_id: str, department: str):
+    """
+    Сформировать промпт для вызова subagent'а через MCP.
+    CEO использует этот вывод для делегирования отделам.
+    """
+    import json as _json
+    import mcp_server  # noqa: F401
+    from task_store import get_task
+    task = get_task(task_id)
+    if not task:
+        print(f"❌ Задача {task_id} не найдена")
+        return
+
+    dept_readme = DEPARTMENTS_DIR / department / "README.md"
+    agent_file = Path(__file__).parent / ".github" / "agents" / "departments" / f"{department}.agent.md"
+
+    direction = ""
+    if dept_readme.exists():
+        for line in dept_readme.read_text(encoding="utf-8").split("\n"):
+            if line.strip().startswith("**Направление:**"):
+                direction = line.strip().replace("**", "")
+                break
+
+    handoff_input = []
+    handoff_output = []
+    if agent_file.exists():
+        in_section = False
+        out_section = False
+        for line in agent_file.read_text(encoding="utf-8").split("\n"):
+            if line.strip().startswith("## Вход"):
+                in_section = True; out_section = False; continue
+            if line.strip().startswith("## Выход"):
+                out_section = True; in_section = False; continue
+            if line.strip().startswith("## ") and "Вход" not in line and "Выход" not in line:
+                in_section = False; out_section = False
+            if in_section and "`" in line:
+                handoff_input.append(line.strip())
+            if out_section and "`" in line:
+                handoff_output.append(line.strip())
+
+    emoji = DEPARTMENT_EMOJI.get(department, "📁")
+    print(f"\n{'='*60}")
+    print(f"{emoji} Делегирование: {department.capitalize()}")
+    print(f"{'='*60}")
+    print(f"  Задача: {task.get('title', '?')}")
+    print(f"  {direction}")
+    print()
+    print(f"  📥 Handoff input:")
+    for h in handoff_input:
+        print(f"    {h}")
+    print()
+    print(f"  📤 Ожидаемый output:")
+    for h in handoff_output:
+        print(f"    {h}")
+    print()
+    print(f"  📋 Контекст для subagent:")
+    print(f"    task_id: {task_id}")
+    print(f"    title: {task.get('title', '?')}")
+    print(f"    departments_plan: {task.get('departments_plan', [])}")
+    print(f"    departments_completed: {task.get('departments_completed', [])}")
+    print(f"    artifacts: {_json.dumps(task.get('artifacts', {}), ensure_ascii=False)}")
+    print()
+    print(f"  💡 Вызови subagent: departments/{department}.agent.md")
+    print(f"     с описанием задачи выше")
+    print()
 
 
 def orchestrate(description_or_file: str):
@@ -517,6 +585,12 @@ def main():
             except Exception as e:
                 print(f"  ❌ Ошибка: {e}")
 
+    elif command == "delegate":
+        if len(sys.argv) < 4:
+            print("❌ Укажите task_id и отдел.")
+            print("   Пример: python team.py delegate task-a1b2c3 development")
+            sys.exit(1)
+        delegate(sys.argv[2], sys.argv[3])
     elif command == "orchestrate":
         if len(sys.argv) < 3:
             print("❌ Укажите описание задачи или путь к JSON-файлу.")

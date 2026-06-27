@@ -12,6 +12,14 @@
       "Срок: 2 дня",
       "Код должен быть покрыт тестами >80%",
       "Документация на русском"
+    ],
+    "departments_needed": [
+      "product",
+      "architecture",
+      "development",
+      "qa",
+      "devops",
+      "docs"
     ]
   }
 }

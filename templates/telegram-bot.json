@@ -1,0 +1,12 @@
+{
+  "task": {
+    "title": "Telegram бот",
+    "description": "Разработать Telegram бота на Python.\n\nФункциональность:\n- Команды: /start, /help\n- Обработка текстовых сообщений\n- Интеграция с внешним API\n- Логирование запросов",
+    "context": {
+      "project_type": "bot",
+      "stack": ["python", "aiogram", "redis", "postgresql"]
+    },
+    "constraints": ["Деплой на сервер", "Документация"],
+    "departments_needed": ["product", "architecture", "development", "qa", "devops", "docs"]
+  }
+}

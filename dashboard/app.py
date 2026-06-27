@@ -53,6 +53,32 @@ STATUS_COLORS = {
 def load_data() -> dict:
     """Загрузить данные задач и статус отделов."""
     tasks = get_all_tasks()
+    completed_tasks = [t for t in tasks.values() if t.get("status") == "completed"]
+
+    # Тренды
+    total_departments_used = set()
+    total_events = 0
+    for t in tasks.values():
+        total_departments_used.update(t.get("departments_plan", []))
+        total_events += len(t.get("events", []))
+
+    dept_completion_rank = sorted(
+        [
+            {
+                "id": dept_id,
+                "emoji": DEPARTMENT_EMOJI.get(dept_id, "📁"),
+                "label": DEPARTMENT_LABELS.get(dept_id, dept_id),
+                "count": sum(
+                    1 for t in tasks.values()
+                    if dept_id in t.get("departments_completed", [])
+                ),
+            }
+            for dept_id in DEPARTMENT_EMOJI
+        ],
+        key=lambda x: x["count"],
+        reverse=True,
+    )
+
     return {
         "tasks": tasks,
         "departments": [
@@ -75,9 +101,18 @@ def load_data() -> dict:
         "stats": {
             "total": len(tasks),
             "active": sum(1 for t in tasks.values() if t.get("status") == "in_progress"),
-            "completed": sum(1 for t in tasks.values() if t.get("status") == "completed"),
+            "completed": len(completed_tasks),
             "planned": sum(1 for t in tasks.values() if t.get("status") == "planned"),
             "escalated": sum(1 for t in tasks.values() if t.get("status") == "escalated"),
+        },
+        "trends": {
+            "total_completed": len(completed_tasks),
+            "total_events_logged": total_events,
+            "unique_departments_used": len(total_departments_used),
+            "top_departments": dept_completion_rank[:5],
+            "avg_departments_per_task": round(
+                sum(len(t.get("departments_plan", [])) for t in tasks.values()) / max(len(tasks), 1), 1
+            ),
         },
     }
 

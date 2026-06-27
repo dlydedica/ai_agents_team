@@ -1,0 +1,12 @@
+{
+  "task": {
+    "title": "CI/CD пайплайн",
+    "description": "Настроить полный CI/CD пайплайн для проекта.\n\nЧто нужно:\n- GitHub Actions: тесты + линтер\n- Docker сборка образа\n- Деплой на staging/prod\n- Мониторинг и алерты",
+    "context": {
+      "project_type": "devops",
+      "stack": ["docker", "github-actions", "aws", "terraform"]
+    },
+    "constraints": ["Zero-downtime деплой"],
+    "departments_needed": ["product", "architecture", "development", "qa", "devops", "security", "docs"]
+  }
+}

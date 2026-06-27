@@ -1,0 +1,12 @@
+{
+  "task": {
+    "title": "Аналитический дашборд",
+    "description": "Разработать дашборд для визуализации ключевых метрик продукта.\n\nМетрики:\n- DAU/MAU\n- Retention\n- Конверсии\n- Выручка\n- NPS",
+    "context": {
+      "project_type": "analytics",
+      "stack": ["python", "fastapi", "postgresql", "react", "d3"]
+    },
+    "constraints": ["Real-time обновление"],
+    "departments_needed": ["product", "data", "architecture", "development", "qa", "design", "docs"]
+  }
+}

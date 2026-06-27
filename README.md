@@ -214,7 +214,12 @@ ai_agents_team/
 │   ├── app.py                  # FastAPI сервер
 │   ├── templates/index.html    # HTML-шаблон
 │   └── README.md               # Документация
-├── mcp-server/          # 🤖 MCP-сервер координации
+├── templates/           # 📝 Шаблоны типовых задач
+│   ├── rest-api.json           # REST API сервис
+│   ├── telegram-bot.json       # Telegram бот
+│   ├── webapp-auth.json        # Веб-приложение с авторизацией
+│   ├── cicd-pipeline.json      # CI/CD пайплайн
+│   └── analytics-dashboard.json # Аналитический дашборд
 │   ├── server.py              # Сервер
 │   ├── task_store.py          # Хранилище задач
 │   └── README.md              # Документация

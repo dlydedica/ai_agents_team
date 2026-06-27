@@ -24,6 +24,8 @@ from datetime import datetime, timezone
 sys.path.insert(0, str(Path(__file__).parent))
 
 DEPARTMENTS_DIR = Path(__file__).parent / "departments"
+
+DEPARTMENTS_DIR = Path(__file__).parent / "departments"
 ORCHESTRATION_DIR = Path(__file__).parent / "orchestration"
 INTERACTIONS_DIR = Path(__file__).parent / "interactions"
 WORKFLOWS_DIR = Path(__file__).parent / "workflows"
@@ -233,6 +235,13 @@ def orchestrate(description_or_file: str):
     Запустить реальную цепочку выполнения задачи.
     Создаёт задачу в MCP-сервере и последовательно проходит по отделам.
     """
+    # Принудительно переключаем stdout на UTF-8 для эмодзи
+    if hasattr(sys.stdout, 'reconfigure'):
+        try:
+            sys.stdout.reconfigure(encoding='utf-8')
+        except Exception:
+            pass
+
     # Импортируем task_store через mcp_server (добавляет mcp-server/ в path)
     import mcp_server  # noqa: F401
     from task_store import (
@@ -308,8 +317,25 @@ def orchestrate(description_or_file: str):
         prev_dept = dept
         print()
 
-    # Шаг 3: Финальный статус
+    # Получаем финальный статус
     final = get_task(task_id)
+
+    # Шаг 3: 👥 HR Performance Review
+    print(f"{'─'*50}")
+    print(f"  📊 👥 HR — Performance Review")
+    print(f"{'─'*50}")
+    print(f"  Анализ выполнения задачи...")
+    print(f"  • Отделов задействовано: {len(departments)}")
+    print(f"  • Статус: {'✅ Успешно' if final.get('status') == 'completed' else '🔄 В процессе'}")
+    print(f"  • Артефактов создано: {len(final.get('artifacts', {}))}")
+
+    # Рекомендации HR
+    speed = "быстро" if len(departments) <= 3 else "нормально" if len(departments) <= 6 else "сложная задача"
+    quality = "хорошее" if final.get("status") == "completed" else "требует внимания"
+    print(f"  📈 Оценка: задача выполнена {speed}, качество — {quality}")
+    print(f"  💡 Рекомендация: {'добавить больше тестов' if 'qa' not in departments else 'оптимизировать handoff между отделами'}")
+    print()
+
     print(f"{'='*60}")
     if final:
         status = final.get("status", "unknown")

@@ -1,0 +1,12 @@
+{
+  "task": {
+    "title": "Веб-приложение с авторизацией",
+    "description": "Разработать веб-приложение с регистрацией и JWT-авторизацией.\n\nФункциональность:\n- Регистрация / Вход / Выход\n- Профиль пользователя\n- Админ-панель\n- Сброс пароля по email",
+    "context": {
+      "project_type": "webapp",
+      "stack": ["python", "fastapi", "react", "postgresql", "docker", "jwt"]
+    },
+    "constraints": ["Безопасность (JWT, bcrypt)", "Адаптивный дизайн"],
+    "departments_needed": ["product", "architecture", "development", "qa", "devops", "design", "docs"]
+  }
+}

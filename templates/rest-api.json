@@ -1,0 +1,12 @@
+{
+  "task": {
+    "title": "REST API сервис",
+    "description": "Создать REST API с CRUD-операциями на FastAPI.\n\nЭндпоинты:\n- GET /items — список\n- POST /items — создание\n- GET /items/{id} — детали\n- PUT /items/{id} — обновление\n- DELETE /items/{id} — удаление",
+    "context": {
+      "project_type": "microservice",
+      "stack": ["python", "fastapi", "postgresql", "docker"]
+    },
+    "constraints": ["Документация OpenAPI", "Тесты >80%"],
+    "departments_needed": ["product", "architecture", "development", "qa", "devops", "docs"]
+  }
+}

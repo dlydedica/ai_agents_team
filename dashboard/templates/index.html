@@ -141,6 +141,41 @@
         </div>
     </div>
 
+    <!-- Trends -->
+    {% if trends.total_completed > 0 %}
+    <div class="dept-section">
+        <h2>📈 Тренды</h2>
+        <div class="stats" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="stat-card">
+                <div class="number">{{ trends.total_completed }}</div>
+                <div class="label">Завершено задач</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ trends.total_events_logged }}</div>
+                <div class="label">Событий в логах</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ trends.avg_departments_per_task }}</div>
+                <div class="label">Средн. отделов/задачу</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ trends.unique_departments_used }}</div>
+                <div class="label">Задействовано отделов</div>
+            </div>
+        </div>
+        <h3 style="font-size:14px; color:#94a3b8; margin:12px 0 8px;">🏆 Топ отделов по выполненной работе</h3>
+        <div class="dept-grid">
+            {% for dept in trends.top_departments %}
+            <div class="dept-card">
+                <div class="emoji">{{ dept.emoji }}</div>
+                <div class="name">{{ dept.label }}</div>
+                <div class="count">{{ dept.count }} задач</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Departments -->
     <div class="dept-section">
         <h2>📋 Загрузка отделов</h2>

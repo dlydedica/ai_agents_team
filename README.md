@@ -210,6 +210,9 @@ ai_agents_team/
 │   ├── integrate.py           # Скрипт автоматической интеграции
 │   └── README.md              # Инструкция по интеграции
 ├── docs/                # Документация
+│   ├── architecture.md         # Архитектура
+│   ├── BRANDING.md             # Брендбук
+│   └── development_strategy.md # 🚀 Стратегия развития
 ├── examples/            # Примеры
 ├── team.py              # Точка входа CLI
 └── README.md

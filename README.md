@@ -8,7 +8,7 @@
 При получении задачи корпорация действует как реальная IT-компания:
 
 1. **🧠 CEO (Главный Оркестратор)** — анализирует задачу глобально
-2. **🏭 Определяет какие отделы задействовать** — Product, Architecture, Development, QA, DevOps, Design, Docs, HR, HR
+2. **🏭 Определяет какие отделы задействовать** — Product, Architecture, Development, QA, DevOps, Design, Docs, HR, Security, Data, R&D, Legal
 3. **👔 Назначает руководителей отделов (Heads)** — каждый получает свою подзадачу
 4. **👥 Руководители распределяют работу внутри отдела** — сотрудники выполняют
 5. **🔄 Cross-department coordination** — отделы взаимодействуют между собой
@@ -45,12 +45,21 @@
                                     │
                                     ▼
                             ┌────────────┐
-                            │ 👥 HR      │
-                            │            │
-                            │ HR Lead    │
-                            │ HR Analyst │
-                            │ L&D Spec   │
-                            └────────────┘
+                            │ 👥 HR      │          ┌────────────┐          ┌────────────┐
+                            │            │          │ 🛡️ SEC    │          │ 📊 DATA    │
+                            │ HR Lead    │          │            │          │            │
+                            │ HR Analyst │          │ Security   │          │ Data Lead  │
+                            │ L&D Spec   │          │ Engineer   │          │ Data Eng   │
+                            └────────────┘          │ Compliance │          │ Data Sci   │
+                                                     └────────────┘          │ BI Analyst │
+                                                                             └────────────┘
+                            ┌────────────┐          ┌────────────┐
+                            │ 🔬 R&D    │          │ ⚖️ LEGAL  │
+                            │            │          │            │
+                            │ R&D Lead   │          │ Legal Lead │
+                            │ Research   │          │ IP & Lic   │
+                            │ Engineer   │          │ Contracts  │
+                            └────────────┘          └────────────┘
 ```
 
 ## Отделы
@@ -65,6 +74,10 @@
 | 🎨 **Design** | Design Lead | UI/UX Designer |
 | 📖 **Docs** | Technical Writer | — |
 | 👥 **HR** | HR Lead | HR Analyst, L&D Specialist, Talent Scout |
+| 🛡️ **Security** | Security Lead | Security Engineer, Compliance Officer |
+| 📊 **Data** | Data Lead | Data Engineer, Data Scientist, BI Analyst |
+| 🔬 **R&D** | R&D Lead | Research Engineer, Innovation Analyst |
+| ⚖️ **Legal** | Legal Lead | IP & License Specialist, Contracts Manager |
 
 ## Как это работает
 
@@ -80,19 +93,29 @@ graph TD
     C --> I[🎨 Design]
     C --> J[📖 Docs]
     C --> K[👥 HR]
+    C --> L[🛡️ Security]
+    C --> M[📊 Data]
+    C --> N[🔬 R&D]
+    C --> O[⚖️ Legal]
     
-    D --> K[👔 Head распределяет]
-    E --> K
-    F --> K
-    G --> K
-    H --> K
-    I --> K
-    J --> K
+    D --> P[👔 Head распределяет]
+    E --> P
+    F --> P
+    G --> P
+    H --> P
+    I --> P
+    J --> P
+    K --> P
+    L --> P
+    M --> P
+    N --> P
+    O --> P
     
-    K --> L[👥 Сотрудники выполняют]
+    P --> Q[👥 Сотрудники выполняют]
     L --> M[🔄 Межотдельское взаимодействие]
-    M --> N[📦 CEO собирает результат]
-    N --> O[✅ Итоговый отчёт]
+    Q --> R[🔄 Межотдельское взаимодействие]
+    R --> S[📦 CEO собирает результат]
+    S --> T[✅ Итоговый отчёт]
 ```
 
 ## Быстрый старт
@@ -147,7 +170,11 @@ ai_agents_team/
 │   ├── devops/          # ⚙️ Отдел DevOps
 │   ├── design/          # 🎨 Отдел дизайна
 │   ├── docs/            # 📖 Отдел документации
-│   └── hr/              # 👥 Отдел HR и развития команды
+│   ├── hr/              # 👥 Отдел HR и развития команды
+│   ├── security/        # 🛡️ Отдел информационной безопасности
+│   ├── data/            # 📊 Отдел данных и аналитики
+│   ├── rd/              # 🔬 Отдел исследований и инноваций
+│   └── legal/           # ⚖️ Отдел юридического compliance
 ├── workflows/           # Процессы взаимодействия
 ├── integration/         # 🔗 Интеграция в другие проекты
 │   ├── orchestrator.agent.md  # Агент для VS Code Copilot

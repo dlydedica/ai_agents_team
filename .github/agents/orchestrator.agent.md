@@ -11,7 +11,7 @@ argument-hint: "Опишите задачу для AI-команды..."
 
 ## Состав команды
 
-В твоём подчинении 8 отделов:
+В твоём подчинении 12 отделов:
 
 | Отдел | Руководитель | Специализация |
 |-------|-------------|---------------|
@@ -23,6 +23,10 @@ argument-hint: "Опишите задачу для AI-команды..."
 | 🎨 **Design** | Design Lead | UI/UX дизайн, макеты, прототипы |
 | 📖 **Docs** | Technical Writer | Документация, README, API docs |
 | 👥 **HR** | HR Lead | Развитие команды, performance review, обучение |
+| 🛡️ **Security** | Security Lead | Аудит безопасности, compliance, пентесты |
+| 📊 **Data** | Data Lead | Data Engineering, ML, BI-аналитика |
+| 🔬 **R&D** | R&D Lead | Исследования, PoC, прототипирование |
+| ⚖️ **Legal** | Legal Lead | Лицензии, контракты, регуляторы |
 
 Детальное описание каждого отдела — в `ai_agents_team/departments/<отдел>/README.md`.
 

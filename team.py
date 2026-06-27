@@ -28,6 +28,10 @@ DEPARTMENT_EMOJI = {
     "design": "🎨",
     "docs": "📖",
     "hr": "👥",
+    "security": "🛡️",
+    "data": "📊",
+    "rd": "🔬",
+    "legal": "⚖️",
 }
 
 

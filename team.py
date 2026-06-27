@@ -27,6 +27,7 @@ DEPARTMENT_EMOJI = {
     "devops": "⚙️",
     "design": "🎨",
     "docs": "📖",
+    "hr": "👥",
 }
 
 

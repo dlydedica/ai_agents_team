@@ -8,7 +8,7 @@
 При получении задачи корпорация действует как реальная IT-компания:
 
 1. **🧠 CEO (Главный Оркестратор)** — анализирует задачу глобально
-2. **🏭 Определяет какие отделы задействовать** — Product, Architecture, Development, QA, DevOps, Design, Docs
+2. **🏭 Определяет какие отделы задействовать** — Product, Architecture, Development, QA, DevOps, Design, Docs, HR, HR
 3. **👔 Назначает руководителей отделов (Heads)** — каждый получает свою подзадачу
 4. **👥 Руководители распределяют работу внутри отдела** — сотрудники выполняют
 5. **🔄 Cross-department coordination** — отделы взаимодействуют между собой
@@ -42,6 +42,15 @@
             │ Lead       │                  │ Writer     │
             │ UI/UX      │                  │            │
             └────────────┘                  └────────────┘
+                                    │
+                                    ▼
+                            ┌────────────┐
+                            │ 👥 HR      │
+                            │            │
+                            │ HR Lead    │
+                            │ HR Analyst │
+                            │ L&D Spec   │
+                            └────────────┘
 ```
 
 ## Отделы
@@ -55,6 +64,7 @@
 | ⚙️ **DevOps** | DevOps Lead | SRE / Infrastructure Engineer |
 | 🎨 **Design** | Design Lead | UI/UX Designer |
 | 📖 **Docs** | Technical Writer | — |
+| 👥 **HR** | HR Lead | HR Analyst, L&D Specialist, Talent Scout |
 
 ## Как это работает
 
@@ -69,6 +79,7 @@ graph TD
     C --> H[⚙️ DevOps]
     C --> I[🎨 Design]
     C --> J[📖 Docs]
+    C --> K[👥 HR]
     
     D --> K[👔 Head распределяет]
     E --> K
@@ -135,7 +146,8 @@ ai_agents_team/
 │   ├── qa/              # 🧪 Отдел тестирования
 │   ├── devops/          # ⚙️ Отдел DevOps
 │   ├── design/          # 🎨 Отдел дизайна
-│   └── docs/            # 📖 Отдел документации
+│   ├── docs/            # 📖 Отдел документации
+│   └── hr/              # 👥 Отдел HR и развития команды
 ├── workflows/           # Процессы взаимодействия
 ├── integration/         # 🔗 Интеграция в другие проекты
 │   ├── orchestrator.agent.md  # Агент для VS Code Copilot

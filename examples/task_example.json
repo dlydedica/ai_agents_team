@@ -20,6 +20,9 @@
       "qa",
       "devops",
       "docs"
-    ]
+    ],
+    "post_task": {
+      "hr_review": true
+    }
   }
 }

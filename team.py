@@ -293,21 +293,49 @@ def orchestrate(description_or_file: str):
 
         # Читаем профиль отдела для контекста
         dept_readme = DEPARTMENTS_DIR / dept / "README.md"
+        handoff_inputs = ""
+        handoff_outputs = ""
         if dept_readme.exists():
             content = dept_readme.read_text(encoding="utf-8")
-            # Извлекаем первую строку описания
             for line in content.split("\n"):
                 line = line.strip()
                 if line.startswith("**Направление:**"):
                     print(f"  📋 {line}")
-                    break
+                # Извлекаем handoff информацию из agent файла
+        agent_file = Path(__file__).parent / ".github" / "agents" / "departments" / f"{dept}.agent.md"
+        if agent_file.exists():
+            agent_content = agent_file.read_text(encoding="utf-8")
+            in_section = False
+            out_section = False
+            for line in agent_content.split("\n"):
+                if line.strip().startswith("## Вход"):
+                    in_section = True
+                    out_section = False
+                    continue
+                if line.strip().startswith("## Выход"):
+                    out_section = True
+                    in_section = False
+                    continue
+                if line.strip().startswith("## ") and not line.strip().startswith("## Вход") and not line.strip().startswith("## Выход"):
+                    in_section = False
+                    out_section = False
+                if in_section and line.strip().startswith("- `"):
+                    handoff_inputs += f"\n      {line.strip()}"
+                if out_section and line.strip().startswith("- `"):
+                    handoff_outputs += f"\n      {line.strip()}"
 
-        # Симулируем работу отдела
+        print(f"  📥 Handoff input:{handoff_inputs}")
         print(f"  ⏳ {label} работает...")
         artifacts = {
             "output": f"{dept}/{task_id}-output.md",
             "status": "completed",
         }
+
+        # Показываем handoff пакет
+        if i > 0:
+            prev = departments[i - 1]
+            print(f"  📦 Handoff: {prev.capitalize()} → {label}")
+        print(f"  📤 Handoff output:{handoff_outputs}")
 
         # Завершаем отдел
         r = complete_department(task_id, dept, artifacts)

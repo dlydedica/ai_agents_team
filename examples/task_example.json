@@ -1,0 +1,17 @@
+{
+  "task": {
+    "id": "example-001",
+    "title": "Создать микросервис для сокращения ссылок",
+    "description": "Разработать простой REST API для сервиса сокращения ссылок (URL shortener).\n\nФункциональность:\n- POST /shorten — создание короткой ссылки\n- GET /{short_code} — редирект на оригинальный URL\n- GET /stats/{short_code} — статистика переходов\n\nТребования:\n- Язык: Python\n- Фреймворк: FastAPI\n- Хранилище: Redis (для кэша) + PostgreSQL (для постоянства)\n- Docker-контейнеризация\n- OpenAPI документация",
+    "context": {
+      "project_type": "microservice",
+      "stack": ["python", "fastapi", "redis", "postgresql", "docker"],
+      "complexity": "medium"
+    },
+    "constraints": [
+      "Срок: 2 дня",
+      "Код должен быть покрыт тестами >80%",
+      "Документация на русском"
+    ]
+  }
+}

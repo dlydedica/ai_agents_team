@@ -554,18 +554,53 @@ def orchestrate(description_or_file: str):
     # Шаг 2.5: 🛡️ Quality Gate — проверка кода перед завершением
     quality_ok = _quality_gate()
 
-    # Если Quality Gate не пройден — эскалируем и не завершаем задачу
+    # Если Quality Gate не пройден — запускаем адаптивный цикл
     if not quality_ok:
         try:
             from task_store import escalate, log_event
+            from checks.registry import learn_from_failure, run_all_checks
+
             escalate(task_id, "Quality Gate failed — код содержит ошибки")
-            log_event(task_id, "quality_gate.failed",
-                      "Обнаружены синтаксические ошибки в Python-файлах. "
-                      "Задача эскалирована для ручного вмешательства.")
-            print(f"  🚨 Задача {task_id} эскалирована")
-            print(f"  🔧 Запустите: python team.py self-diagnose --fix\n")
-        except Exception:
-            pass
+
+            # 🔬 R&D — анализ ошибки и создание check
+            print(f"{'─'*50}")
+            print(f"  🔬 R&D — анализ ошибки и создание проверки")
+            print(f"{'─'*50}")
+            passed, failed = run_all_checks(verbose=False)
+            for f in failed:
+                learn_from_failure(f"{f['name']}: {f['message']}")
+                print(f"  🧬 Создан check: {f['name']}")
+            log_event(task_id, "rd.check_created",
+                      f"Создано {len(failed)} checks для предотвращения повторения")
+
+            # 💻 Development — auto-fix
+            print(f"\n{'─'*50}")
+            print(f"  💻 Development — автоисправление")
+            print(f"{'─'*50}")
+            fixes = _auto_fix()
+            if fixes:
+                for f in fixes:
+                    print(f"  {f}")
+                log_event(task_id, "dev.auto_fix", f"Применено {len(fixes)} исправлений")
+            else:
+                print(f"  Ручное исправление не требуется или невозможно")
+
+            # 👥 HR — запись в memory
+            print(f"\n{'─'*50}")
+            print(f"  👥 HR — запись инцидента")
+            print(f"{'─'*50}")
+            try:
+                from memory.memory_store import learn_from_tasks
+                learn_from_tasks()
+                print(f"  ✅ Инцидент записан в долговременную память")
+            except Exception:
+                pass
+
+            print(f"\n  🚨 Задача {task_id} эскалирована (Quality Gate не пройден)")
+            print(f"  🧬 Созданы checks для предотвращения в будущем")
+
+        except Exception as e:
+            print(f"  ⚠️  Адаптивный цикл: {e}")
 
     # Шаг 3: 👥 HR Performance Review (реальный анализ)
     print(f"{'─'*50}")

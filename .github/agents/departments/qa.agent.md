@@ -20,6 +20,14 @@ argument-hint: "Code and implementation notes to review and test..."
 5. Если баги → верни на доработку
 6. Если ок → одобри
 
+## Quality Gate (автоматически после проверки кода)
+1. Запусти `python team.py self-diagnose` — все checks из реестра
+2. Если найдены ошибки:
+   - Передай в 🔬 R&D для анализа
+   - Передай в 💻 Development для auto-fix
+   - Задача эскалируется CEO
+3. Если всё чисто — задача завершается
+
 ## Выход (Handoff to DevOps)
 - `tests/reports/test-report.md` — отчёт
 - `tests/reports/coverage.md` — покрытие

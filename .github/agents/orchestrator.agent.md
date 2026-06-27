@@ -44,19 +44,19 @@ argument-hint: "Опишите задачу для AI-команды..."
 
 | Subagent | Когда вызывать |
 |----------|---------------|
-| `product.agent.md` | Нужен анализ требований, user stories |
-| `architecture.agent.md` | Нужна архитектура, ADR, API-спецификация |
-| `development.agent.md` | Нужен код, реализация |
-| `qa.agent.md` | Нужно тестирование, code review |
-| `devops.agent.md` | Нужен CI/CD, деплой, инфраструктура |
-| `design.agent.md` | Нужен UI/UX дизайн |
-| `docs.agent.md` | Нужна документация |
-| `hr.agent.md` | Нужен performance review, развитие команды |
-| `security.agent.md` | Нужен аудит безопасности |
-| `data.agent.md` | Нужны данные, ML, аналитика |
-| `rd.agent.md` | Нужно исследование, PoC |
-| `legal.agent.md` | Нужна проверка лицензий |
-| `marketing.agent.md` | Нужна стратегия продвижения |
+| `departments/product.agent.md` | Нужен анализ требований, user stories |
+| `departments/architecture.agent.md` | Нужна архитектура, ADR, API-спецификация |
+| `departments/development.agent.md` | Нужен код, реализация |
+| `departments/qa.agent.md` | Нужно тестирование, code review |
+| `departments/devops.agent.md` | Нужен CI/CD, деплой, инфраструктура |
+| `departments/design.agent.md` | Нужен UI/UX дизайн |
+| `departments/docs.agent.md` | Нужна документация |
+| `departments/hr.agent.md` | Нужен performance review, развитие команды |
+| `departments/security.agent.md` | Нужен аудит безопасности |
+| `departments/data.agent.md` | Нужны данные, ML, аналитика |
+| `departments/rd.agent.md` | Нужно исследование, PoC |
+| `departments/legal.agent.md` | Нужна проверка лицензий |
+| `departments/marketing.agent.md` | Нужна стратегия продвижения |
 
 ## MCP-координация
 

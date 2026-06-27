@@ -1,5 +1,25 @@
 # MCP server data
 mcp-server/data/
+mcp-server/*.bak
 # Python cache
 __pycache__/
 *.pyc
+# Virtual environments
+.venv/
+venv/
+# Environment
+.env
+# Build
+*.egg-info/
+dist/
+build/
+# OS
+.DS_Store
+Thumbs.db
+# IDE
+.vs/
+# Cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.log

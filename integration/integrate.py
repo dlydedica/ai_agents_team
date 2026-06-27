@@ -44,6 +44,15 @@ def integrate(target_path: str):
         print(f"❌ Файл агента не найден: {AGENT_FILE}")
         sys.exit(1)
 
+    # Копируем агентов отделов
+    dept_agents_src = TEAM_DIR / ".github" / "agents" / "departments"
+    dept_agents_dst = agents_dir / "departments"
+    if dept_agents_src.exists():
+        dept_agents_dst.mkdir(parents=True, exist_ok=True)
+        for agent_file in dept_agents_src.glob("*.agent.md"):
+            shutil.copy2(agent_file, dept_agents_dst / agent_file.name)
+            print(f"✅ Агент отдела скопирован: {dept_agents_dst / agent_file.name}")
+
     # Проверяем/создаём copilot-instructions.md с указанием на ai_agents_team
     instructions_dir = target / ".github"
     instructions_file = instructions_dir / "copilot-instructions.md"

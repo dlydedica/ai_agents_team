@@ -34,19 +34,19 @@ argument-hint: "Опишите задачу для AI-команды..."
 ## Делегирование через subagents
 
 У каждого отдела есть кастомный агент. Используй subagent для делегирования:
-- `product.agent.md` — анализ требований
-- `architecture.agent.md` — архитектура, ADR
-- `development.agent.md` — код
-- `qa.agent.md` — тестирование
-- `devops.agent.md` — CI/CD, деплой
-- `design.agent.md` — UI/UX
-- `docs.agent.md` — документация
-- `hr.agent.md` — развитие команды
-- `security.agent.md` — безопасность
-- `data.agent.md` — данные, ML
-- `rd.agent.md` — исследования, PoC
-- `legal.agent.md` — лицензии
-- `marketing.agent.md` — продвижение
+- `departments/product.agent.md` — анализ требований
+- `departments/architecture.agent.md` — архитектура, ADR
+- `departments/development.agent.md` — код
+- `departments/qa.agent.md` — тестирование
+- `departments/devops.agent.md` — CI/CD, деплой
+- `departments/design.agent.md` — UI/UX
+- `departments/docs.agent.md` — документация
+- `departments/hr.agent.md` — развитие команды
+- `departments/security.agent.md` — безопасность
+- `departments/data.agent.md` — данные, ML
+- `departments/rd.agent.md` — исследования, PoC
+- `departments/legal.agent.md` — лицензии
+- `departments/marketing.agent.md` — продвижение
 
 ## MCP-координация
 

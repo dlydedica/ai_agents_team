@@ -18,6 +18,7 @@ from task_store import (
     complete_department as store_complete,
     handoff as store_handoff,
     get_task as store_get_task,
+    get_task_timeline as store_get_timeline,
     list_active as store_list_active,
     log_event as store_log_event,
     escalate as store_escalate,
@@ -105,6 +106,17 @@ async def list_tools() -> list[types.Tool]:
             },
         ),
         types.Tool(
+            name="get_task_timeline",
+            description="Получить хронологию событий задачи",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "task_id": {"type": "string", "description": "ID задачи"},
+                },
+                "required": ["task_id"],
+            },
+        ),
+        types.Tool(
             name="list_active_tasks",
             description="Список активных задач",
             inputSchema={
@@ -182,6 +194,14 @@ async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
             result = store_get_task(arguments["task_id"])
             if not result:
                 return [types.TextContent(type="text", text="❌ Задача не найдена")]
+            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
+
+        elif name == "get_task_timeline":
+            result = store_get_timeline(arguments["task_id"])
+            if result is None:
+                return [types.TextContent(type="text", text="❌ Задача не найдена")]
+            if not result:
+                return [types.TextContent(type="text", text="📭 Нет событий")]
             return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
 
         elif name == "list_active_tasks":

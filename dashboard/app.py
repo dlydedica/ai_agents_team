@@ -13,7 +13,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "mcp-server"))
-from task_store import _load_tasks, STORAGE_DIR
+from task_store import get_all_tasks, STORAGE_DIR
 
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -21,7 +21,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
 
-app = FastAPI(title="AI Agents Team Dashboard")
+app = FastAPI(title="AI DevCorp Dashboard")
 
 templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
@@ -52,7 +52,7 @@ STATUS_COLORS = {
 
 def load_data() -> dict:
     """Загрузить данные задач и статус отделов."""
-    tasks = _load_tasks()
+    tasks = get_all_tasks()
     return {
         "tasks": tasks,
         "departments": [
@@ -63,7 +63,7 @@ def load_data() -> dict:
                 "active_count": sum(
                     1 for t in tasks.values()
                     if t.get("current_department") == dept_id
-                    and t["status"] == "in_progress"
+                    and t.get("status") == "in_progress"
                 ),
                 "completed_count": sum(
                     1 for t in tasks.values()
@@ -74,10 +74,10 @@ def load_data() -> dict:
         ],
         "stats": {
             "total": len(tasks),
-            "active": sum(1 for t in tasks.values() if t["status"] == "in_progress"),
-            "completed": sum(1 for t in tasks.values() if t["status"] == "completed"),
-            "planned": sum(1 for t in tasks.values() if t["status"] == "planned"),
-            "escalated": sum(1 for t in tasks.values() if t["status"] == "escalated"),
+            "active": sum(1 for t in tasks.values() if t.get("status") == "in_progress"),
+            "completed": sum(1 for t in tasks.values() if t.get("status") == "completed"),
+            "planned": sum(1 for t in tasks.values() if t.get("status") == "planned"),
+            "escalated": sum(1 for t in tasks.values() if t.get("status") == "escalated"),
         },
     }
 

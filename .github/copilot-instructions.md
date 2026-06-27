@@ -1,6 +1,6 @@
 # Инструкции для GitHub Copilot
 
-## AI Agents Team
+## AI DevCorp — Корпорация AI-агентов
 
 В проекте подключена команда AI-агентов из `ai_agents_team/`.
 
@@ -11,3 +11,4 @@
 
 Структура команды: `ai_agents_team/departments/` (13 отделов)
 Процессы: `ai_agents_team/workflows/`
+Бренд: `ai_agents_team/docs/BRANDING.md`

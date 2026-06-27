@@ -32,6 +32,7 @@ DEPARTMENT_EMOJI = {
     "data": "📊",
     "rd": "🔬",
     "legal": "⚖️",
+    "marketing": "📣",
 }
 
 

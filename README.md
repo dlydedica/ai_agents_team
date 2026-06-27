@@ -8,7 +8,7 @@
 При получении задачи корпорация действует как реальная IT-компания:
 
 1. **🧠 CEO (Главный Оркестратор)** — анализирует задачу глобально
-2. **🏭 Определяет какие отделы задействовать** — Product, Architecture, Development, QA, DevOps, Design, Docs, HR, Security, Data, R&D, Legal
+2. **🏭 Определяет какие отделы задействовать** — Product, Architecture, Development, QA, DevOps, Design, Docs, HR, Security, Data, R&D, Legal, Marketing
 3. **👔 Назначает руководителей отделов (Heads)** — каждый получает свою подзадачу
 4. **👥 Руководители распределяют работу внутри отдела** — сотрудники выполняют
 5. **🔄 Cross-department coordination** — отделы взаимодействуют между собой
@@ -78,6 +78,7 @@
 | 📊 **Data** | Data Lead | Data Engineer, Data Scientist, BI Analyst |
 | 🔬 **R&D** | R&D Lead | Research Engineer, Innovation Analyst |
 | ⚖️ **Legal** | Legal Lead | IP & License Specialist, Contracts Manager |
+| 📣 **Marketing** | Marketing Lead | Content Marketing Manager, Growth Marketing Manager, Brand Designer, Marketing Analyst |
 
 ## Как это работает
 
@@ -97,25 +98,25 @@ graph TD
     C --> M[📊 Data]
     C --> N[🔬 R&D]
     C --> O[⚖️ Legal]
+    C --> P[📣 Marketing]
     
-    D --> P[👔 Head распределяет]
-    E --> P
-    F --> P
-    G --> P
-    H --> P
-    I --> P
-    J --> P
-    K --> P
-    L --> P
-    M --> P
-    N --> P
-    O --> P
+    D --> Q[👔 Head распред.]
+    E --> Q
+    F --> Q
+    G --> Q
+    H --> Q
+    I --> Q
+    J --> Q
+    K --> Q
+    L --> Q
+    M --> Q
+    N --> Q
+    O --> Q
+    P --> Q
     
-    P --> Q[👥 Сотрудники выполняют]
-    L --> M[🔄 Межотдельское взаимодействие]
-    Q --> R[🔄 Межотдельское взаимодействие]
-    R --> S[📦 CEO собирает результат]
-    S --> T[✅ Итоговый отчёт]
+    Q --> R[👥 Сотрудники]
+    R --> S[📦 CEO собирает]
+    S --> T[✅ Итог]
 ```
 
 ## Быстрый старт
@@ -174,7 +175,8 @@ ai_agents_team/
 │   ├── security/        # 🛡️ Отдел информационной безопасности
 │   ├── data/            # 📊 Отдел данных и аналитики
 │   ├── rd/              # 🔬 Отдел исследований и инноваций
-│   └── legal/           # ⚖️ Отдел юридического compliance
+│   ├── legal/           # ⚖️ Отдел юридического compliance
+│   └── marketing/       # 📣 Отдел маркетинга и продвижения
 ├── workflows/           # Процессы взаимодействия
 ├── integration/         # 🔗 Интеграция в другие проекты
 │   ├── orchestrator.agent.md  # Агент для VS Code Copilot

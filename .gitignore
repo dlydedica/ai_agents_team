@@ -23,3 +23,4 @@ Thumbs.db
 .mypy_cache/
 .ruff_cache/
 *.log
+memory/data/

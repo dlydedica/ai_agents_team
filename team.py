@@ -347,6 +347,19 @@ def self_diagnose(fix_mode: bool = False):
                 learn_from_failure(f"{f['name']}: {f['message']}")
                 print(f"    ✅ Создана проверка для: {f['name']}")
         print()
+    else:
+        # Если всё ок — запускаем ретроспективу completed задач
+        try:
+            from task_store import get_all_tasks
+            completed = [t for t in get_all_tasks().values() if t.get("status") == "completed"]
+            if completed:
+                from departments.hr.retrospective import run_retrospective
+                last = completed[-1]
+                result = run_retrospective(last["id"])
+                if result and "error" not in result:
+                    print(f"  📋 Ретроспектива последней задачи: {result['report']}")
+        except Exception:
+            pass
 
     return len(failed) == 0
 
@@ -622,6 +635,24 @@ def orchestrate(description_or_file: str):
             print(f"  ⚠️  HR-анализ завершился с ошибкой: {hr_result.stderr[:100]}")
     except Exception as e:
         print(f"  ⚠️  HR-движок недоступен: {e}")
+    print()
+
+    # Шаг 3.5: 🔄 Ретроспектива — анализ для самоулучшения
+    print(f"{'─'*50}")
+    print(f"  🔄 Ретроспектива — анализ задачи")
+    print(f"{'─'*50}")
+    try:
+        retro_script = str(Path(__file__).parent / "departments" / "hr" / "retrospective.py")
+        retro_result = subprocess.run(
+            [sys.executable, retro_script, task_id],
+            capture_output=True, text=True, timeout=15
+        )
+        if retro_result.stdout:
+            for line in retro_result.stdout.strip().split("\n"):
+                if line.strip() and not line.startswith("❌"):
+                    print(f"  {line}")
+    except Exception as e:
+        print(f"  ⚠️  Ретроспектива: {e}")
     print()
 
     # Шаг 4: 🧠 Memory — сохраняем в долговременную память

@@ -1,2 +1,5 @@
 # MCP server data
 mcp-server/data/
+# Python cache
+__pycache__/
+*.pyc

@@ -1,6 +1,9 @@
 # 🛡️ Отдел информационной безопасности (Security / InfoSec)
 
 **Направление:** Безопасность приложений, инфраструктуры, compliance.
+**Штат:** 3 сотрудника · Head + 2 Middle
+**Матрица компетенций:** `docs/competency_matrix.md#-security`
+**Профили:** `docs/employee_profiles.md#-security`
 
 ## Руководитель
 
@@ -21,6 +24,7 @@
 ### Сотрудники
 
 #### 🔒 Security Engineer
+**Грейды:** Junior · Middle · Senior
 
 **Роль:** Техническая безопасность.
 
@@ -31,6 +35,10 @@
 - Управление секретами и доступом
 
 **Скилы:** penetration_testing, sast_dast, network_security, container_security, secrets_management, iam
+
+*Junior:* SAST-сканирование, базовые проверки
+*Middle:* пентесты, настройка защиты, security review
+*Senior:* архитектура безопасности, incident response
 
 #### 📋 Compliance Officer
 

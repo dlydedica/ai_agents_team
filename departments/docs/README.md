@@ -1,6 +1,9 @@
 # 📖 Отдел документации (Documentation Department)
 
 **Направление:** Техническая документация, README, API docs.
+**Штат:** 1 сотрудник · Head (единственный)
+**Матрица компетенций:** `docs/competency_matrix.md#-docs`
+**Профили:** `docs/employee_profiles.md#-docs`
 
 ## Руководитель
 

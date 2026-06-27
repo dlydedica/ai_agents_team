@@ -212,6 +212,8 @@ ai_agents_team/
 ├── docs/                # Документация
 │   ├── architecture.md         # Архитектура
 │   ├── BRANDING.md             # Брендбук
+│   ├── competency_matrix.md    # 📊 Матрица компетенций
+│   ├── employee_profiles.md    # 👥 Профили сотрудников
 │   └── development_strategy.md # 🚀 Стратегия развития
 ├── examples/            # Примеры
 ├── team.py              # Точка входа CLI

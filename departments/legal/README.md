@@ -1,6 +1,9 @@
 # ⚖️ Отдел юридического compliance (Legal & Compliance)
 
 **Направление:** Юридические вопросы, лицензии, контракты.
+**Штат:** 3 сотрудника · Head + 2 Middle
+**Матрица компетенций:** `docs/competency_matrix.md#-legal`
+**Профили:** `docs/employee_profiles.md#-legal`
 
 ## Руководитель
 

@@ -1,6 +1,9 @@
 # 🏭 Отдел продукта (Product Department)
 
 **Направление:** Анализ требований, продуктовые решения, приоритизация.
+**Штат:** 2 сотрудника · Head + 1 Middle
+**Матрица компетенций:** `docs/competency_matrix.md#-product`
+**Профили:** `docs/employee_profiles.md#-product`
 
 ## Руководитель
 

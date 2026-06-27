@@ -1,6 +1,9 @@
 # 🎨 Отдел дизайна (Design Department)
 
 **Направление:** UI/UX дизайн, прототипирование, дизайн-системы.
+**Штат:** 2 сотрудника · Head + 1 Middle
+**Матрица компетенций:** `docs/competency_matrix.md#-design`
+**Профили:** `docs/employee_profiles.md#-design`
 
 ## Руководитель
 

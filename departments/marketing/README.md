@@ -1,6 +1,9 @@
 # 📣 Отдел маркетинга и продвижения (Marketing)
 
 **Направление:** Продвижение продукта заказчика, позиционирование, Go-to-Market.
+**Штат:** 5 сотрудников · Head + 3 Middle + 1 Junior
+**Матрица компетенций:** `docs/competency_matrix.md#-marketing`
+**Профили:** `docs/employee_profiles.md#-marketing`
 
 ## Руководитель
 

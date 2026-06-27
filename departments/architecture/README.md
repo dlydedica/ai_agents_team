@@ -1,6 +1,9 @@
 # 🏗️ Отдел архитектуры (Architecture Department)
 
 **Направление:** Проектирование систем, выбор технологий, ADR.
+**Штат:** 2 сотрудника · Head + 1 Middle
+**Матрица компетенций:** `docs/competency_matrix.md#-architecture`
+**Профили:** `docs/employee_profiles.md#-architecture`
 
 ## Руководитель
 

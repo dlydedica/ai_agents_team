@@ -37,6 +37,8 @@
 
 **Скилы:** performance_analytics, metrics_collection, data_visualization, reporting, bottleneck_analysis
 
+**Инструменты:** `departments/hr/hr_engine.py` — автоматический анализ и генерация отчётов
+
 #### 🎓 Learning & Development Specialist
 
 **Роль:** Обучение и развитие навыков агентов.

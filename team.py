@@ -320,10 +320,27 @@ def orchestrate(description_or_file: str):
     # Получаем финальный статус
     final = get_task(task_id)
 
-    # Шаг 3: 👥 HR Performance Review
+    # Шаг 3: 👥 HR Performance Review (реальный анализ)
     print(f"{'─'*50}")
     print(f"  📊 👥 HR — Performance Review")
     print(f"{'─'*50}")
+    try:
+        # Запускаем HR-движок
+        import subprocess
+        hr_script = str(Path(__file__).parent / "departments" / "hr" / "hr_engine.py")
+        hr_result = subprocess.run(
+            [sys.executable, hr_script],
+            capture_output=True, text=True, timeout=30
+        )
+        if hr_result.stdout:
+            for line in hr_result.stdout.split("\n"):
+                if line.strip():
+                    print(f"  {line}")
+        if hr_result.returncode != 0:
+            print(f"  ⚠️  HR-анализ завершился с ошибкой: {hr_result.stderr[:100]}")
+    except Exception as e:
+        print(f"  ⚠️  HR-движок недоступен: {e}")
+    print()
     print(f"  Анализ выполнения задачи...")
     print(f"  • Отделов задействовано: {len(departments)}")
     print(f"  • Статус: {'✅ Успешно' if final.get('status') == 'completed' else '🔄 В процессе'}")

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents Team — Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a; color: #e2e8f0; padding: 24px;
+        }
+        .header { margin-bottom: 28px; }
+        .header h1 { font-size: 28px; color: #f8fafc; }
+        .header p { color: #94a3b8; margin-top: 4px; }
+
+        /* Stats */
+        .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 28px; }
+        .stat-card {
+            background: #1e293b; border-radius: 12px; padding: 16px;
+            text-align: center; border: 1px solid #334155;
+        }
+        .stat-card .number { font-size: 32px; font-weight: 700; }
+        .stat-card .label { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+        .stat-card.total .number { color: #f8fafc; }
+        .stat-card.active .number { color: #3b82f6; }
+        .stat-card.completed .number { color: #10b981; }
+        .stat-card.planned .number { color: #6b7280; }
+        .stat-card.escalated .number { color: #ef4444; }
+
+        /* Departments bar */
+        .dept-section { margin-bottom: 28px; }
+        .dept-section h2 { font-size: 16px; color: #94a3b8; margin-bottom: 12px; }
+        .dept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+        .dept-card {
+            background: #1e293b; border: 1px solid #334155; border-radius: 10px;
+            padding: 12px; text-align: center; transition: all 0.2s;
+        }
+        .dept-card:hover { border-color: #475569; }
+        .dept-card .emoji { font-size: 24px; }
+        .dept-card .name { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        .dept-card .count { font-size: 14px; font-weight: 600; margin-top: 4px; }
+        .dept-card.busy { border-color: #3b82f6; background: #1e3a5f; }
+        .dept-card.idle { border-color: #334155; }
+
+        /* Tasks */
+        .tasks-section h2 { font-size: 16px; color: #94a3b8; margin-bottom: 12px; }
+        .task-card {
+            background: #1e293b; border: 1px solid #334155; border-radius: 12px;
+            padding: 16px; margin-bottom: 12px;
+        }
+        .task-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .task-title { font-size: 16px; font-weight: 600; color: #f8fafc; }
+        .task-id { font-size: 12px; color: #64748b; font-family: monospace; }
+        .task-badge {
+            display: inline-block; padding: 2px 10px; border-radius: 20px;
+            font-size: 12px; font-weight: 500;
+        }
+        .badge-planned { background: #374151; color: #9ca3af; }
+        .badge-in_progress { background: #1e3a5f; color: #60a5fa; }
+        .badge-completed { background: #064e3b; color: #34d399; }
+        .badge-escalated { background: #450a0a; color: #f87171; }
+
+        .task-body { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .task-info { font-size: 13px; }
+        .task-info div { margin-bottom: 4px; }
+        .task-info .label { color: #64748b; }
+        .task-info .value { color: #e2e8f0; }
+
+        /* Progress */
+        .progress-section { margin-top: 12px; }
+        .progress-bar-track {
+            display: flex; gap: 4px; height: 8px; border-radius: 4px;
+            overflow: hidden; background: #334155;
+        }
+        .progress-seg {
+            flex: 1; border-radius: 4px; transition: all 0.3s;
+            min-width: 8px; height: 100%;
+        }
+        .progress-seg.done { background: #10b981; }
+        .progress-seg.active { background: #3b82f6; }
+        .progress-seg.pending { background: #475569; }
+        .progress-seg.skipped { background: #1e293b; border: 1px solid #334155; }
+
+        /* Timeline */
+        .timeline { margin-top: 12px; }
+        .timeline h3 { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+        .timeline-item {
+            display: flex; gap: 8px; font-size: 12px; padding: 2px 0;
+            color: #94a3b8;
+        }
+        .timeline-item .time { color: #64748b; font-family: monospace; white-space: nowrap; }
+        .timeline-item .event { color: #cbd5e1; }
+
+        .empty { text-align: center; padding: 40px; color: #64748b; font-size: 14px; }
+
+        /* Handoff chain */
+        .handoff-chain {
+            display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+            margin-top: 8px;
+        }
+        .handoff-chain .chain-item {
+            font-size: 12px; padding: 2px 8px; border-radius: 4px;
+            background: #334155; color: #94a3b8;
+        }
+        .handoff-chain .chain-item.done { background: #064e3b; color: #34d399; }
+        .handoff-chain .chain-item.current { background: #1e3a5f; color: #60a5fa; }
+        .handoff-chain .arrow { color: #475569; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 AI Agents Team — Dashboard</h1>
+        <p>Статус задач и загрузка отделов</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat-card total">
+            <div class="number">{{ stats.total }}</div>
+            <div class="label">Всего задач</div>
+        </div>
+        <div class="stat-card active">
+            <div class="number">{{ stats.active }}</div>
+            <div class="label">Активные</div>
+        </div>
+        <div class="stat-card completed">
+            <div class="number">{{ stats.completed }}</div>
+            <div class="label">Завершённые</div>
+        </div>
+        <div class="stat-card planned">
+            <div class="number">{{ stats.planned }}</div>
+            <div class="label">Запланированные</div>
+        </div>
+        <div class="stat-card escalated">
+            <div class="number">{{ stats.escalated }}</div>
+            <div class="label">Эскалированные</div>
+        </div>
+    </div>
+
+    <!-- Departments -->
+    <div class="dept-section">
+        <h2>📋 Загрузка отделов</h2>
+        <div class="dept-grid">
+            {% for dept in departments %}
+            <div class="dept-card {% if dept.active_count > 0 %}busy{% else %}idle{% endif %}">
+                <div class="emoji">{{ dept.emoji }}</div>
+                <div class="name">{{ dept.label }}</div>
+                <div class="count">
+                    {% if dept.active_count > 0 %}
+                    🟢 {{ dept.active_count }} актив.
+                    {% else %}
+                    💤 свободен
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Tasks -->
+    <div class="tasks-section">
+        <h2>📋 Задачи</h2>
+        {% if tasks %}
+        {% for task_id, task in tasks.items() | sort(attribute='1.created_at', reverse=True) %}
+        <div class="task-card">
+            <div class="task-header">
+                <div>
+                    <div class="task-title">{{ task.title }}</div>
+                    <div class="task-id">{{ task.id }}</div>
+                </div>
+                <div>
+                    <span class="task-badge badge-{{ task.status }}">
+                        {% if task.status == "in_progress" %}🔄 В работе
+                        {% elif task.status == "completed" %}✅ Завершена
+                        {% elif task.status == "planned" %}📋 Запланирована
+                        {% elif task.status == "escalated" %}🚨 Эскалация
+                        {% else %}{{ task.status }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            {% if task.description %}
+            <div style="font-size:13px; color:#94a3b8; margin-bottom:12px;">
+                {{ task.description[:200] }}{% if task.description|length > 200 %}...{% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Handoff chain -->
+            <div class="handoff-chain">
+                {% for dept in task.departments_plan %}
+                <span class="chain-item {% if dept in task.departments_completed %}done{% elif dept == task.current_department %}current{% endif %}">
+                    {{ DEPARTMENT_EMOJI.get(dept, '📁') }} {{ DEPARTMENT_LABELS.get(dept, dept) }}
+                </span>
+                {% if not loop.last %}<span class="arrow">→</span>{% endif %}
+                {% endfor %}
+            </div>
+
+            {% if task.artifacts and task.artifacts.keys()|length > 0 %}
+            <div class="task-info" style="margin-top:8px;">
+                <span class="label">📦 Артефакты:</span>
+                <span class="value">
+                    {% for key, val in task.artifacts.items() %}
+                    {{ key }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </span>
+            </div>
+            {% endif %}
+
+            <!-- Timeline -->
+            {% if task.events %}
+            <div class="timeline">
+                <h3>📅 События</h3>
+                {% for event in task.events[-5:] %}
+                <div class="timeline-item">
+                    <span class="time">{{ event.time[11:19] }}</span>
+                    <span class="event">{{ event.detail }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="empty">📭 Нет задач. Создайте задачу через MCP-сервер или team.py</div>
+        {% endif %}
+    </div>
+
+    <div style="text-align:center; margin-top:24px; color:#475569; font-size:12px;">
+        🔄 Обновите страницу для получения актуальных данных &middot;
+        AI Agents Team v1.0
+    </div>
+</body>
+</html>

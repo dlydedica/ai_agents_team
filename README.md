@@ -141,6 +141,18 @@ python team.py run --file examples/task_example.json
 
 Просто откройте Copilot Chat и выберите агента **🧠 CEO — Оркестратор AI-команды** из выпадающего списка. Затем опишите задачу — Оркестратор сам проанализирует и распределит работу.
 
+### Веб-дашборд
+
+```bash
+# Запустить дашборд
+python team.py dashboard
+
+# Или через другой порт
+python team.py dashboard --port 8080
+```
+
+Откройте `http://localhost:8000` — увидите статус задач и загрузку отделов.
+
 ### Интеграция в другой проект
 
 ```bash
@@ -183,6 +195,10 @@ ai_agents_team/
 │   ├── events.md              # Событийная модель
 │   ├── escalation.md          # Эскалация и конфликты
 │   └── handoffs/              # Handoff-протоколы
+├── dashboard/           # 📊 Веб-дашборд статуса задач
+│   ├── app.py                  # FastAPI сервер
+│   ├── templates/index.html    # HTML-шаблон
+│   └── README.md               # Документация
 ├── mcp-server/          # 🤖 MCP-сервер координации
 │   ├── server.py              # Сервер
 │   ├── task_store.py          # Хранилище задач

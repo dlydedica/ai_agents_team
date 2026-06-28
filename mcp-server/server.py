@@ -40,6 +40,9 @@ from task_store import (
     escalate as store_escalate,
 )
 
+# Подключаем систему обучения и памяти
+from memory.memory_store import learn_from_tasks, suggest_similar
+
 # Создаём FastMCP-сервер
 mcp = FastMCP(
     name="ai-agents-coordinator",
@@ -68,6 +71,22 @@ def create_task(title: str, departments: list[str], description: str = "") -> st
         description: Описание задачи (опционально)
     """
     result = store_create_task(title=title, departments=departments, description=description)
+
+    # 🔍 Ищем похожие задачи в памяти — CEO сможет использовать их план
+    if "error" not in result:
+        try:
+            similar = suggest_similar(title, description)
+            if similar:
+                result["similar_tasks"] = similar
+                result["_note"] = (
+                    "🧠 Найдены похожие задачи в памяти — "
+                    "используйте их departments_plan как основу"
+                )
+            else:
+                result["similar_tasks"] = []
+        except Exception:
+            result["similar_tasks"] = []
+
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 
@@ -103,6 +122,18 @@ def complete_department_task(task_id: str, department: str, artifacts: dict = No
     result = store_complete(task_id, department, artifacts)
     if not result:
         return '{"error": "❌ Задача не найдена"}'
+
+    # 🧠 Если задача полностью завершена — извлекаем знания в долговременную память
+    if "error" not in result and result.get("status") == "completed":
+        try:
+            learn_result = learn_from_tasks()
+            result["_memory"] = (
+                f"🧠 Извлечено знаний: {learn_result.get('learned', 0)} новых, "
+                f"всего {learn_result.get('total', 0)}"
+            )
+        except Exception:
+            result["_memory"] = "⚠️ Ошибка записи в память"
+
     return json.dumps(result, ensure_ascii=False, indent=2)
 
 

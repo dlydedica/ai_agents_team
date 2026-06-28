@@ -480,6 +480,22 @@ def orchestrate(description_or_file: str):
     print(f"   🔗 Цепочка: {' → '.join(d.capitalize() for d in departments)}")
     print()
 
+    # 🔍 Ищем похожие задачи в памяти
+    try:
+        from memory.memory_store import suggest_similar
+        similar = suggest_similar(title, description)
+        if similar:
+            print(f"  🧠 Найдены похожие задачи в памяти ({len(similar)} шт.):")
+            for s in similar:
+                score = s.get("score", 0) * 100
+                lesson = s.get("lesson", "") or ""
+                print(f"     • [{score:.0f}%] {s['title']} — {s.get('status', '?')}")
+                if lesson:
+                    print(f"       {lesson[:100]}")
+            print()
+    except Exception:
+        pass
+
     # Шаг 1: Создаём задачу в MCP-сервере
     result = create_task(title, departments, description)
     if "error" in result:
@@ -598,22 +614,13 @@ def orchestrate(description_or_file: str):
             else:
                 print(f"  Ручное исправление не требуется или невозможно")
 
-            # 👥 HR — запись в memory
-            print(f"\n{'─'*50}")
-            print(f"  👥 HR — запись инцидента")
-            print(f"{'─'*50}")
-            try:
-                from memory.memory_store import learn_from_tasks
-                learn_from_tasks()
-                print(f"  ✅ Инцидент записан в долговременную память")
-            except Exception:
-                pass
-
             print(f"\n  🚨 Задача {task_id} эскалирована (Quality Gate не пройден)")
             print(f"  🧬 Созданы checks для предотвращения в будущем")
 
         except Exception as e:
             print(f"  ⚠️  Адаптивный цикл: {e}")
+
+    # 👥 Память сохраняется в Шаге 4 (ниже) для всех случаев — успех и ошибка
 
     # Шаг 3: 👥 HR Performance Review (реальный анализ)
     print(f"{'─'*50}")

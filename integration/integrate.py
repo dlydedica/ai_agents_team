@@ -110,6 +110,31 @@ def _print_hint(result: subprocess.CompletedProcess, pip_cmd: list[str], hint: s
     print(f"   Выполните вручную: {hint}")
 
 
+def _ensure_gitignore(target: Path):
+    """Добавляет ai_agents_team/ в .gitignore, если там нет submodule."""
+    gitignore_file = target / ".gitignore"
+    entry = "ai_agents_team/"
+
+    # Проверяем, не submodule ли это
+    if (target / ".gitmodules").exists():
+        content = (target / ".gitmodules").read_text(encoding="utf-8")
+        if "ai_agents_team" in content:
+            return  # submodule — не нужно
+
+    if not gitignore_file.exists():
+        gitignore_file.write_text(entry + "\n", encoding="utf-8")
+        print(f"✅ Создан .gitignore с '{entry}'")
+        return
+
+    content = gitignore_file.read_text(encoding="utf-8")
+    if entry not in content:
+        with open(gitignore_file, "a", encoding="utf-8") as f:
+            f.write("\n# AI DevCorp — обновляется отдельно\n" + entry + "\n")
+        print(f"✅ Добавлено '{entry}' в .gitignore")
+    else:
+        print(f"ℹ️  .gitignore уже содержит {entry}")
+
+
 def integrate(target_path: str):
     target = Path(target_path).resolve()
 
@@ -252,6 +277,9 @@ def integrate(target_path: str):
     print()
     print("📦 Установка дополнительных зависимостей (дашборд)...")
     _install_extras(pip_cmd, TEAM_DIR)
+
+    # Добавляем ai_agents_team в .gitignore (для копий)
+    _ensure_gitignore(target)
 
     print()
     print("=" * 60)

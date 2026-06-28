@@ -364,6 +364,43 @@ def _install_dependencies(target: Path, dry_run: bool = False) -> bool:
     return True
 
 
+def _ensure_gitignore(target: Path, connection_type: str, dry_run: bool = False) -> bool:
+    """Добавляет ai_agents_team в .gitignore, если это не submodule.
+
+    Для submodule не нужно — git управляет ими отдельно через .gitmodules.
+    Для git (отдельный репозиторий), copy и symlink — нужно, чтобы родительский
+    проект случайно не закоммитил файлы ai_agents_team в свой репозиторий.
+    """
+    if connection_type == "submodule":
+        _print_step("ℹ️", "Submodule — .gitignore не требуется")
+        return True
+
+    gitignore_file = target / ".gitignore"
+    entry = "ai_agents_team/"
+
+    if dry_run:
+        if gitignore_file.exists() and entry in gitignore_file.read_text(encoding="utf-8"):
+            _print_step("✅", ".gitignore уже содержит ai_agents_team/")
+        else:
+            _print_step("🔍", f"[dry-run] Добавить '{entry}' в .gitignore")
+        return True
+
+    if not gitignore_file.exists():
+        gitignore_file.write_text(entry + "\n", encoding="utf-8")
+        _print_step("✅", f"Создан .gitignore с '{entry}'")
+        return True
+
+    content = gitignore_file.read_text(encoding="utf-8")
+    if entry not in content:
+        with open(gitignore_file, "a", encoding="utf-8") as f:
+            f.write("\n# AI DevCorp — обновляется отдельно\n" + entry + "\n")
+        _print_step("✅", f"Добавлено '{entry}' в .gitignore")
+    else:
+        _print_step("✅", ".gitignore уже содержит ai_agents_team/")
+
+    return True
+
+
 def update(target_path: str, dry_run: bool = False):
     """Запустить процесс обновления."""
     target = Path(target_path).resolve()
@@ -421,8 +458,13 @@ def update(target_path: str, dry_run: bool = False):
     _update_instructions(target, dry_run)
     print()
 
+    # Шаг 4: .gitignore (для копий и симлинков)
+    print("  ── Шаг 4: .gitignore ──")
+    _ensure_gitignore(target, connection_type, dry_run)
+    print()
+
     # Шаг 5: Обновить зависимости
-    print("  ── Шаг 4: Зависимости ──")
+    print("  ── Шаг 5: Зависимости ──")
     _install_dependencies(target, dry_run)
     print()
 

@@ -12,3 +12,15 @@
 Структура команды: `ai_agents_team/departments/` (13 отделов)
 Процессы: `ai_agents_team/workflows/`
 Бренд: `ai_agents_team/docs/BRANDING.md`
+
+## MCP-сервер координации
+
+MCP-сервер запускается автоматически при использовании Copilot Chat (транспорт `stdio`).
+
+Для явного запуска в **HTTP-режиме** (Docker/production):
+```bash
+cd ai_agents_team
+python mcp-server/server.py --transport http
+```
+Сервер будет доступен на `http://localhost:8000/mcp`.
+Конфигурация подключения: `mcp.json` → `ai-agents-coordinator`

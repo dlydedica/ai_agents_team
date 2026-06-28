@@ -1,16 +1,26 @@
 """
 MCP-сервер координации AI Agents Team.
 
-Предоставляет инструменты для управления задачами,
-handoff между отделами и отслеживания прогресса.
+Поддерживает два транспорта:
+  - stdio (по умолчанию): для запуска через подпроцесс
+  - http (streamable-http): для запуска как HTTP-сервер (как Figma/GitHub MCP)
+
+Использование:
+  # STDIO (по умолчанию)
+  python server.py
+
+  # HTTP (Streamable HTTP)
+  python server.py --transport http
+
+  # HTTP на другом порту
+  python server.py --transport http --port 9000
 """
 
+import argparse
 import json
 import sys
-from mcp.server import Server, NotificationOptions
-from mcp.server.models import InitializationOptions
-import mcp.server.stdio
-import mcp.types as types
+
+from mcp.server.fastmcp import FastMCP
 
 from task_store import (
     create_task as store_create_task,
@@ -24,232 +34,207 @@ from task_store import (
     escalate as store_escalate,
 )
 
-server = Server("ai-agents-coordinator")
+# Создаём FastMCP-сервер
+mcp = FastMCP(
+    name="ai-agents-coordinator",
+    instructions="Координатор команды AI-агентов. Управляет задачами, handoff между отделами и отслеживанием прогресса.",
+    host="0.0.0.0",
+    port=8000,
+    streamable_http_path="/mcp",
+)
 
 
-@server.list_tools()
-async def list_tools() -> list[types.Tool]:
-    return [
-        types.Tool(
-            name="create_task",
-            description="Создать новую задачу для команды AI-агентов",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "title": {"type": "string", "description": "Название задачи"},
-                    "description": {"type": "string", "description": "Описание задачи"},
-                    "departments": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Список отделов в порядке выполнения",
-                    },
-                },
-                "required": ["title", "departments"],
-            },
-        ),
-        types.Tool(
-            name="assign_to_department",
-            description="Назначить задачу отделу для выполнения",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "task_id": {"type": "string", "description": "ID задачи"},
-                    "department": {"type": "string", "description": "Название отдела"},
-                },
-                "required": ["task_id", "department"],
-            },
-        ),
-        types.Tool(
-            name="complete_department_task",
-            description="Отметить, что отдел завершил свою часть работы",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "task_id": {"type": "string", "description": "ID задачи"},
-                    "department": {"type": "string", "description": "Название отдела"},
-                    "artifacts": {
-                        "type": "object",
-                        "description": "Артефакты (файлы, ссылки и т.д.)",
-                        "additionalProperties": {"type": "string"},
-                    },
-                },
-                "required": ["task_id", "department"],
-            },
-        ),
-        types.Tool(
-            name="handoff",
-            description="Передать задачу от одного отдела другому",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "task_id": {"type": "string", "description": "ID задачи"},
-                    "from_department": {"type": "string", "description": "Откуда"},
-                    "to_department": {"type": "string", "description": "Куда"},
-                    "artifacts": {
-                        "type": "object",
-                        "description": "Артефакты для передачи",
-                        "additionalProperties": {"type": "string"},
-                    },
-                },
-                "required": ["task_id", "from_department", "to_department"],
-            },
-        ),
-        types.Tool(
-            name="get_task_status",
-            description="Получить текущий статус задачи",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "task_id": {"type": "string", "description": "ID задачи"},
-                },
-                "required": ["task_id"],
-            },
-        ),
-        types.Tool(
-            name="get_task_timeline",
-            description="Получить хронологию событий задачи",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "task_id": {"type": "string", "description": "ID задачи"},
-                },
-                "required": ["task_id"],
-            },
-        ),
-        types.Tool(
-            name="list_active_tasks",
-            description="Список активных задач",
-            inputSchema={
-                "type": "object",
-                "properties": {},
-            },
-        ),
-        types.Tool(
-            name="log_event",
-            description="Записать событие в лог задачи",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "task_id": {"type": "string", "description": "ID задачи"},
-                    "event_type": {"type": "string", "description": "Тип события"},
-                    "detail": {"type": "string", "description": "Описание события"},
-                },
-                "required": ["task_id", "event_type", "detail"],
-            },
-        ),
-        types.Tool(
-            name="escalate",
-            description="Эскалировать проблему по задаче",
-            inputSchema={
-                "type": "object",
-                "properties": {
-                    "task_id": {"type": "string", "description": "ID задачи"},
-                    "reason": {"type": "string", "description": "Причина эскалации"},
-                },
-                "required": ["task_id", "reason"],
-            },
-        ),
-    ]
+# ──────────────────────────────────────────────
+# Инструменты
+# ──────────────────────────────────────────────
 
 
-@server.call_tool()
-async def call_tool(name: str, arguments: dict) -> list[types.TextContent]:
-    try:
-        if name == "create_task":
-            result = store_create_task(
-                title=arguments["title"],
-                departments=arguments["departments"],
-                description=arguments.get("description", ""),
-            )
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
+@mcp.tool(
+    name="create_task",
+    description="Создать новую задачу для команды AI-агентов",
+)
+def create_task(title: str, departments: list[str], description: str = "") -> str:
+    """Создать новую задачу.
 
-        elif name == "assign_to_department":
-            result = store_assign(arguments["task_id"], arguments["department"])
-            if not result:
-                return [types.TextContent(type="text", text="❌ Задача не найдена")]
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
-
-        elif name == "complete_department_task":
-            result = store_complete(
-                arguments["task_id"],
-                arguments["department"],
-                arguments.get("artifacts"),
-            )
-            if not result:
-                return [types.TextContent(type="text", text="❌ Задача не найдена")]
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
-
-        elif name == "handoff":
-            result = store_handoff(
-                arguments["task_id"],
-                arguments["from_department"],
-                arguments["to_department"],
-                arguments.get("artifacts"),
-            )
-            if not result:
-                return [types.TextContent(type="text", text="❌ Задача не найдена")]
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
-
-        elif name == "get_task_status":
-            result = store_get_task(arguments["task_id"])
-            if not result:
-                return [types.TextContent(type="text", text="❌ Задача не найдена")]
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
-
-        elif name == "get_task_timeline":
-            result = store_get_timeline(arguments["task_id"])
-            if result is None:
-                return [types.TextContent(type="text", text="❌ Задача не найдена")]
-            if not result:
-                return [types.TextContent(type="text", text="📭 Нет событий")]
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
-
-        elif name == "list_active_tasks":
-            result = store_list_active()
-            if not result:
-                return [types.TextContent(type="text", text="📭 Нет активных задач")]
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
-
-        elif name == "log_event":
-            result = store_log_event(arguments["task_id"], arguments["event_type"], arguments["detail"])
-            if not result:
-                return [types.TextContent(type="text", text="❌ Задача не найдена")]
-            return [types.TextContent(type="text", text="✅ Событие записано")]
-
-        elif name == "escalate":
-            result = store_escalate(arguments["task_id"], arguments["reason"])
-            if not result:
-                return [types.TextContent(type="text", text="❌ Задача не найдена")]
-            return [types.TextContent(type="text", text=json.dumps(result, ensure_ascii=False, indent=2))]
-
-        else:
-            return [types.TextContent(type="text", text=f"❌ Неизвестный инструмент: {name}")]
-
-    except Exception as e:
-        return [types.TextContent(type="text", text=f"❌ Ошибка: {str(e)}")]
+    Args:
+        title: Название задачи
+        departments: Список отделов в порядке выполнения
+        description: Описание задачи (опционально)
+    """
+    result = store_create_task(title=title, departments=departments, description=description)
+    return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-@server.list_prompts()
-async def list_prompts() -> list[types.Prompt]:
-    return []
+@mcp.tool(
+    name="assign_to_department",
+    description="Назначить задачу отделу для выполнения",
+)
+def assign_to_department(task_id: str, department: str) -> str:
+    """Назначить задачу отделу.
+
+    Args:
+        task_id: ID задачи
+        department: Название отдела
+    """
+    result = store_assign(task_id, department)
+    if not result:
+        return '{"error": "❌ Задача не найдена"}'
+    return json.dumps(result, ensure_ascii=False, indent=2)
 
 
-async def main():
-    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="ai-agents-coordinator",
-                server_version="1.0.0",
-                capabilities=server.get_capabilities(
-                    notification_options=NotificationOptions(),
-                    experimental_capabilities={},
-                ),
-            ),
-        )
+@mcp.tool(
+    name="complete_department_task",
+    description="Отметить, что отдел завершил свою часть работы",
+)
+def complete_department_task(task_id: str, department: str, artifacts: dict = None) -> str:
+    """Завершить работу отдела над задачей.
+
+    Args:
+        task_id: ID задачи
+        department: Название отдела
+        artifacts: Артефакты (файлы, ссылки и т.д.)
+    """
+    result = store_complete(task_id, department, artifacts)
+    if not result:
+        return '{"error": "❌ Задача не найдена"}'
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@mcp.tool(
+    name="handoff",
+    description="Передать задачу от одного отдела другому",
+)
+def handoff(task_id: str, from_department: str, to_department: str, artifacts: dict = None) -> str:
+    """Передать задачу между отделами.
+
+    Args:
+        task_id: ID задачи
+        from_department: Откуда
+        to_department: Куда
+        artifacts: Артефакты для передачи
+    """
+    result = store_handoff(task_id, from_department, to_department, artifacts)
+    if not result:
+        return '{"error": "❌ Задача не найдена"}'
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@mcp.tool(
+    name="get_task_status",
+    description="Получить текущий статус задачи",
+)
+def get_task_status(task_id: str) -> str:
+    """Получить статус задачи.
+
+    Args:
+        task_id: ID задачи
+    """
+    result = store_get_task(task_id)
+    if not result:
+        return '{"error": "❌ Задача не найдена"}'
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@mcp.tool(
+    name="get_task_timeline",
+    description="Получить хронологию событий задачи",
+)
+def get_task_timeline(task_id: str) -> str:
+    """Получить хронологию задачи.
+
+    Args:
+        task_id: ID задачи
+    """
+    result = store_get_timeline(task_id)
+    if result is None:
+        return '{"error": "❌ Задача не найдена"}'
+    if not result:
+        return '{"message": "📭 Нет событий"}'
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@mcp.tool(
+    name="list_active_tasks",
+    description="Список активных задач",
+)
+def list_active_tasks() -> str:
+    """Получить список активных задач."""
+    result = store_list_active()
+    if not result:
+        return '{"message": "📭 Нет активных задач"}'
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+@mcp.tool(
+    name="log_event",
+    description="Записать событие в лог задачи",
+)
+def log_event(task_id: str, event_type: str, detail: str) -> str:
+    """Записать событие.
+
+    Args:
+        task_id: ID задачи
+        event_type: Тип события
+        detail: Описание события
+    """
+    result = store_log_event(task_id, event_type, detail)
+    if not result:
+        return '{"error": "❌ Задача не найдена"}'
+    return '{"status": "✅ Событие записано"}'
+
+
+@mcp.tool(
+    name="escalate",
+    description="Эскалировать проблему по задаче",
+)
+def escalate(task_id: str, reason: str) -> str:
+    """Эскалировать проблему.
+
+    Args:
+        task_id: ID задачи
+        reason: Причина эскалации
+    """
+    result = store_escalate(task_id, reason)
+    if not result:
+        return '{"error": "❌ Задача не найдена"}'
+    return json.dumps(result, ensure_ascii=False, indent=2)
+
+
+# ──────────────────────────────────────────────
+# Точка входа
+# ──────────────────────────────────────────────
+
+
+def main():
+    parser = argparse.ArgumentParser(description="MCP-сервер координации AI Agents Team")
+    parser.add_argument(
+        "--transport",
+        choices=["stdio", "http"],
+        default="stdio",
+        help="Транспорт: stdio (по умолчанию) или http (Streamable HTTP)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Порт для HTTP-транспорта (по умолчанию: 8000)",
+    )
+    args = parser.parse_args()
+
+    if args.transport == "http":
+        # Обновляем порт, если передан через CLI
+        mcp.settings.port = args.port
+        print(f"🚀 Запуск MCP-сервера в режиме HTTP (Streamable HTTP)")
+        print(f"   Эндпоинт: http://0.0.0.0:{args.port}/mcp")
+        print(f"   Подключение в VS Code:")
+        print(f'     "type": "http",')
+        print(f'     "url": "http://localhost:{args.port}/mcp"')
+        print()
+        mcp.run(transport="streamable-http")
+    else:
+        print("🚀 Запуск MCP-сервера в режиме STDIO", file=sys.stderr)
+        mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    main()

@@ -19,5 +19,5 @@ COPY departments/ ./departments/
 # Порты
 EXPOSE 8000
 
-# По умолчанию — MCP-сервер
-CMD ["python", "mcp-server/server.py"]
+# По умолчанию — MCP-сервер в HTTP-режиме (Streamable HTTP)
+CMD ["python", "mcp-server/server.py", "--transport", "http"]

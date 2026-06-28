@@ -125,11 +125,13 @@ def integrate(target_path: str):
     if mcp_file.exists():
         print(f"ℹ️  MCP-конфиг уже существует: {mcp_file}")
         print("   Убедитесь, что в нём есть секция 'ai-agents-coordinator'")
+        print(f"   Для HTTP-режима (Docker): замените на type: http, url: http://localhost:8000/mcp")
     else:
         vscode_dir.mkdir(parents=True, exist_ok=True)
         with open(mcp_file, "w", encoding="utf-8") as f:
             json.dump(mcp_config, f, ensure_ascii=False, indent=2)
-        print(f"✅ Создан MCP-конфиг: {mcp_file}")
+        print(f"✅ Создан MCP-конфиг (STDIO — автозапуск): {mcp_file}")
+        print(f"   Для HTTP-режима (Docker): python ai_agents_team/mcp-server/server.py --transport http")
 
     # Устанавливаем зависимости MCP-сервера
     req_file = TEAM_DIR / "mcp-server" / "requirements.txt"

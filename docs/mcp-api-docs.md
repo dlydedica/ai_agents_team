@@ -6,7 +6,25 @@ MCP-сервер реализует протокол **Model Context Protocol** 
 
 ### VS Code (рекомендуется)
 
-Добавьте в `.vscode/mcp.json` вашего проекта:
+Добавьте в `mcp.json` вашего проекта:
+
+### Режим HTTP (рекомендуется)
+
+```json
+{
+  "servers": {
+    "ai-agents-coordinator": {
+      "type": "http",
+      "url": "http://localhost:8000/mcp",
+      "description": "🧠 Координатор AI-команды"
+    }
+  }
+}
+```
+
+> **Важно:** Сервер должен быть запущен: `python ai_agents_team/mcp-server/server.py --transport http`
+
+### Режим STDIO (автозапуск)
 
 ```json
 {

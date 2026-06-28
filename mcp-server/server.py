@@ -20,6 +20,12 @@ import argparse
 import json
 import sys
 
+# Принудительная UTF-8 кодировка для stdout/stderr (особенно важно на Windows)
+if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+if sys.stderr and hasattr(sys.stderr, 'reconfigure'):
+    sys.stderr.reconfigure(encoding='utf-8')
+
 from mcp.server.fastmcp import FastMCP
 
 from task_store import (

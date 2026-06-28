@@ -10,9 +10,13 @@
     2. Копирует агентов 13 отделов в .github/agents/departments/
     3. Создаёт .github/copilot-instructions.md если его нет
     4. Создаёт .vscode/mcp.json для подключения MCP-сервера координации
-    5. Устанавливает зависимости MCP-сервера (pip install -r requirements.txt)
-    6. При отсутствии .github/ — использует fallback-копию из agents_fallback/
-    7. Выводит инструкцию для разработчика
+       — все инструменты в autoApprove, без ручного подтверждения
+    5. Автоматически определяет venv целевого проекта (или использует системный pip)
+    6. Устанавливает зависимости MCP-сервера (pip install --yes -r requirements.txt)
+    7. Устанавливает пакет ai-devcorp (pip install --yes -e .) для entry_points
+    8. Устанавливает доп. зависимости (дашборд) — опционально
+    9. При отсутствии .github/ — использует fallback-копию из agents_fallback/
+   10. Выводит инструкцию для разработчика
 """
 
 import sys
@@ -25,6 +29,85 @@ from pathlib import Path
 AGENT_FILE = Path(__file__).parent / "orchestrator.agent.md"
 FALLBACK_DIR = Path(__file__).parent / "agents_fallback"
 TEAM_DIR = Path(__file__).parent.parent
+
+
+def _resolve_pip(target: Path) -> list[str]:
+    """Определяет pip: ищет venv в целевом проекте, иначе системный."""
+    venv_python = None
+    for venv_name in (".venv", "venv", ".env", "env"):
+        candidate = target / venv_name / "Scripts" / "python.exe"
+        if candidate.exists():
+            venv_python = candidate
+            break
+        candidate = target / venv_name / "bin" / "python"
+        if candidate.exists():
+            venv_python = candidate
+            break
+
+    if venv_python:
+        print(f"ℹ️  Обнаружено виртуальное окружение: {venv_python.parent}")
+        return [str(venv_python), "-m", "pip"]
+    else:
+        print(f"ℹ️  Виртуальное окружение не найдено, использую системный pip")
+        return [sys.executable, "-m", "pip"]
+
+
+def _run_pip(pip_cmd: list[str], args: list[str], label: str, hint: str) -> bool:
+    """Запускает pip с --yes для полной автоматизации."""
+    try:
+        result = subprocess.run(
+            [*pip_cmd, "install", "--yes", *args],
+            capture_output=True, text=True, check=False
+        )
+        if result.returncode == 0:
+            print(f"✅ {label}")
+            return True
+        else:
+            print(f"⚠️  Не удалось: {label} (код: {result.returncode})")
+            _print_hint(result, pip_cmd, hint)
+            return False
+    except FileNotFoundError:
+        print(f"⚠️  pip не найден. Выполните вручную: {hint}")
+        return False
+
+
+def _install_requirements(pip_cmd: list[str], req_file: Path):
+    """Устанавливает зависимости из requirements.txt (полностью автоматически)."""
+    _run_pip(
+        pip_cmd,
+        ["-r", str(req_file)],
+        f"Зависимости установлены: {req_file}",
+        f"pip install -r {req_file}",
+    )
+
+
+def _install_package(pip_cmd: list[str], package_dir: Path):
+    """Устанавливает пакет в режиме разработки (полностью автоматически)."""
+    _run_pip(
+        pip_cmd,
+        ["-e", str(package_dir)],
+        f"Пакет установлен (editable): {package_dir.name}",
+        f"pip install -e {package_dir}",
+    )
+
+
+def _install_extras(pip_cmd: list[str], team_dir: Path):
+    """Устанавливает дополнительные зависимости (дашборд) — без запросов."""
+    _run_pip(
+        pip_cmd,
+        ["-e", f"{team_dir}[dashboard]"],
+        "Доп. зависимости (дашборд) установлены",
+        f"pip install -e \"{team_dir}[dashboard]\"",
+    )
+
+
+def _print_hint(result: subprocess.CompletedProcess, pip_cmd: list[str], hint: str):
+    """Печатает stderr при ошибке и подсказку."""
+    stderr = result.stderr.strip()
+    if stderr:
+        for line in stderr.splitlines()[-5:]:
+            print(f"   ╰ {line}")
+    print(f"   Выполните вручную: {hint}")
 
 
 def integrate(target_path: str):
@@ -117,7 +200,18 @@ def integrate(target_path: str):
                 "type": "stdio",
                 "command": "python",
                 "args": ["${workspaceFolder}/ai_agents_team/mcp-server/server.py"],
-                "description": "🧠 Координатор AI-команды: управление задачами, handoff, эскалация"
+                "description": "🧠 Координатор AI-команды: управление задачами, handoff, эскалация",
+                "autoApprove": [
+                    "create_task",
+                    "assign_to_department",
+                    "complete_department_task",
+                    "handoff",
+                    "get_task_status",
+                    "get_task_timeline",
+                    "list_active_tasks",
+                    "log_event",
+                    "escalate"
+                ]
             }
         }
     }
@@ -133,25 +227,31 @@ def integrate(target_path: str):
         print(f"✅ Создан MCP-конфиг (STDIO — автозапуск): {mcp_file}")
         print(f"   Для HTTP-режима (Docker): python ai_agents_team/mcp-server/server.py --transport http")
 
+    # Определяем Python: сначала venv целевого проекта, затем системный
+    pip_cmd = _resolve_pip(target)
+
     # Устанавливаем зависимости MCP-сервера
     req_file = TEAM_DIR / "mcp-server" / "requirements.txt"
     if req_file.exists():
         print()
         print("📦 Установка зависимостей MCP-сервера...")
-        try:
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", "-r", str(req_file)],
-                capture_output=True, text=True, check=False
-            )
-            if result.returncode == 0:
-                print(f"✅ Зависимости MCP-сервера установлены")
-            else:
-                print(f"⚠️  Не удалось установить зависимости (код: {result.returncode})")
-                print(f"   Выполните вручную: pip install -r {req_file}")
-        except FileNotFoundError:
-            print(f"⚠️  pip не найден. Выполните вручную: pip install -r {req_file}")
+        _install_requirements(pip_cmd, req_file)
     else:
         print(f"⚠️  Файл requirements.txt не найден: {req_file}")
+
+    # Устанавливаем сам пакет ai-devcorp (editable), чтобы работали entry_points
+    setup_file = TEAM_DIR / "setup.py"
+    if setup_file.exists():
+        print()
+        print("📦 Установка пакета ai-devcorp (режим разработки)...")
+        _install_package(pip_cmd, TEAM_DIR)
+    else:
+        print(f"⚠️  setup.py не найден: {setup_file}")
+
+    # Опционально: устанавливаем зависимости дашборда
+    print()
+    print("📦 Установка дополнительных зависимостей (дашборд)...")
+    _install_extras(pip_cmd, TEAM_DIR)
 
     print()
     print("=" * 60)
@@ -162,8 +262,9 @@ def integrate(target_path: str):
    ✅ Агент Orchestrator добавлен в {agents_dir}
    ✅ Агенты 13 отделов добавлены в {agents_dir / 'departments'}
    ✅ Инструкции Copilot созданы в {instructions_file}
-   ✅ MCP-конфиг создан в {mcp_file}
-   ✅ Зависимости MCP-сервера установлены
+   ✅ MCP-конфиг создан в {mcp_file} (автозапуск + autoApprove)
+   ✅ Зависимости MCP-сервера установлены (автоматически)
+   ✅ Пакет ai-devcorp установлен (editable) (автоматически)
 
 ▶️ Что нужно сделать дальше:
    1. Откройте проект в VS Code (или перезагрузите окно: Ctrl+Shift+P → Reload Window)

@@ -24,8 +24,8 @@ jobs:
       - name: 📦 Установка зависимостей
         run: |
           python -m pip install --upgrade pip
-          pip install mcp portalocker
-          pip install flake8 pytest
+          pip install --yes mcp portalocker
+          pip install --yes flake8 pytest
 
       - name: 🔍 Линтер (flake8)
         run: |
@@ -47,7 +47,7 @@ jobs:
 
       - name: 🔍 Проверка импорта дашборда
         run: |
-          pip install fastapi uvicorn jinja2
+          pip install --yes fastapi uvicorn jinja2
           python -c "import sys; sys.path.insert(0, '.'); from dashboard.app import app; print('✅ dashboard импортируется корректно')"
 
       - name: ✅ Статус

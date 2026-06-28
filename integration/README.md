@@ -35,6 +35,43 @@ git submodule add https://github.com/dlydedica/ai_agents_team.git ai_agents_team
 python ai_agents_team/integration/integrate.py .
 ```
 
+## Что устанавливается автоматически
+
+При запуске `integrate.py` скрипт самостоятельно:
+
+1. 🔍 **Определяет** виртуальное окружение в целевом проекте (`.venv/`, `venv/`, `.env/`, `env/`)
+2. 📦 **Устанавливает** зависимости MCP-сервера (`portalocker`, `mcp`) — с флагом `--yes`
+3. 📦 **Устанавливает** сам пакет `ai-devcorp` в режиме разработки (`pip install --yes -e`)
+4. 📦 **Устанавливает** доп. зависимости для дашборда (`fastapi`, `uvicorn`, `jinja2`)
+
+Всё работает сразу «из коробки» — никаких ручных `pip install`.
+
+## 🤖 Полная автономность
+
+### MCP-сервер (без подтверждений из чата)
+
+В сгенерированном `.vscode/mcp.json` все инструменты MCP-сервера добавлены в `autoApprove`:
+
+```json
+"autoApprove": [
+    "create_task",
+    "assign_to_department",
+    "complete_department_task",
+    "handoff",
+    "get_task_status",
+    "get_task_timeline",
+    "list_active_tasks",
+    "log_event",
+    "escalate"
+]
+```
+
+Это значит, что при работе из Copilot Chat инструменты запускаются **без ручного подтверждения** — сервер работает полностью бесшовно.
+
+### pip install (без запросов)
+
+Все вызовы `pip install` внутри `integrate.py` используют флаг `--yes`, что исключает любые интерактивные запросы в консоли.
+
 ## Требования
 
 - Visual Studio Code

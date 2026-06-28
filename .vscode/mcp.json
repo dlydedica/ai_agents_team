@@ -4,7 +4,18 @@
       "type": "stdio",
       "command": "python",
       "args": ["${workspaceFolder}/mcp-server/server.py"],
-      "description": "🧠 Координатор AI-команды: управление задачами, handoff, эскалация"
+      "description": "🧠 Координатор AI-команды: управление задачами, handoff, эскалация",
+      "autoApprove": [
+        "create_task",
+        "assign_to_department",
+        "complete_department_task",
+        "handoff",
+        "get_task_status",
+        "get_task_timeline",
+        "list_active_tasks",
+        "log_event",
+        "escalate"
+      ]
     }
   }
 }

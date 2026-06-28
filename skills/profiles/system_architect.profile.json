@@ -1,0 +1,17 @@
+{
+  "name": "system_architect",
+  "version": "1.0.0",
+  "display_name": "System Architect",
+  "description": "Проектирование архитектуры: системы, микросервисы, ADR",
+  "skills": [
+    "system_design",
+    "microservices",
+    "python_backend",
+    "postgresql",
+    "docker_k8s"
+  ],
+  "departments": ["architecture"],
+  "grade": "S",
+  "tags": ["architecture", "design", "microservices", "system-design"],
+  "icon": "🏗️"
+}

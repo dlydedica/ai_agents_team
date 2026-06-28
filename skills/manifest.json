@@ -1,0 +1,452 @@
+{
+  "$schema": "v1",
+  "generated_at": "2026-06-28T15:27:08.166012",
+  "total": 21,
+  "by_type": {
+    "builtin": 21,
+    "external": 0
+  },
+  "by_department": {
+    "product": 1,
+    "architecture": 3,
+    "development": 8,
+    "qa": 2,
+    "devops": 4,
+    "design": 2,
+    "docs": 1,
+    "hr": 2,
+    "security": 2,
+    "data": 4,
+    "rd": 2,
+    "legal": 2,
+    "marketing": 2
+  },
+  "by_grade": {
+    "L": 1,
+    "M": 16,
+    "S": 4
+  },
+  "skills": [
+    {
+      "name": "orchestration",
+      "version": "1.0.0",
+      "display_name": "CEO — Оркестратор AI-команды",
+      "description": "Управление AI-командой: анализ, делегирование, координация, синтез",
+      "type": "builtin",
+      "grade": "L",
+      "tags": [
+        "orchestration",
+        "management",
+        "delegation",
+        "coordination",
+        "planning"
+      ],
+      "departments": [
+        "product",
+        "architecture",
+        "development",
+        "qa",
+        "devops",
+        "design",
+        "docs",
+        "hr",
+        "security",
+        "data",
+        "rd",
+        "legal",
+        "marketing"
+      ],
+      "filepath": "builtin\\01-core\\orchestration.skill.md"
+    },
+    {
+      "name": "postgresql",
+      "version": "1.0.0",
+      "display_name": "PostgreSQL Database Engineer",
+      "description": "Проектирование и оптимизация баз данных PostgreSQL",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "postgresql",
+        "database",
+        "sql",
+        "performance",
+        "indexing"
+      ],
+      "departments": [
+        "development",
+        "data"
+      ],
+      "filepath": "builtin\\02-development\\databases\\postgresql.skill.md"
+    },
+    {
+      "name": "redis_cache",
+      "version": "1.0.0",
+      "display_name": "Redis — Кэширование и очереди",
+      "description": "Работа с Redis: кэширование, очереди, паб/саб, сессии",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "redis",
+        "cache",
+        "queue",
+        "pubsub",
+        "performance"
+      ],
+      "departments": [
+        "development",
+        "devops"
+      ],
+      "filepath": "builtin\\02-development\\databases\\redis_cache.skill.md"
+    },
+    {
+      "name": "fullstack_web",
+      "version": "1.0.0",
+      "display_name": "Fullstack Web Developer",
+      "description": "Сквозная разработка веб-приложений (frontend + backend)",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "fullstack",
+        "web",
+        "python",
+        "javascript",
+        "react",
+        "fastapi"
+      ],
+      "departments": [
+        "development"
+      ],
+      "filepath": "builtin\\02-development\\fullstack\\fullstack_web.skill.md"
+    },
+    {
+      "name": "nodejs_backend",
+      "version": "1.0.0",
+      "display_name": "Node.js Backend Developer",
+      "description": "Разработка бэкенда на Node.js (Express, NestJS, TypeScript)",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "nodejs",
+        "typescript",
+        "backend",
+        "express",
+        "nestjs",
+        "javascript"
+      ],
+      "departments": [
+        "development"
+      ],
+      "filepath": "builtin\\02-development\\javascript\\nodejs_backend.skill.md"
+    },
+    {
+      "name": "react_frontend",
+      "version": "1.0.0",
+      "display_name": "React Frontend Developer",
+      "description": "Разработка пользовательских интерфейсов на React и TypeScript",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "react",
+        "typescript",
+        "javascript",
+        "frontend",
+        "ui",
+        "web"
+      ],
+      "departments": [
+        "development"
+      ],
+      "filepath": "builtin\\02-development\\javascript\\react_frontend.skill.md"
+    },
+    {
+      "name": "fastapi_api",
+      "version": "1.0.0",
+      "display_name": "FastAPI REST API",
+      "description": "Проектирование и реализация REST API на FastAPI",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "python",
+        "fastapi",
+        "rest",
+        "api",
+        "openapi",
+        "pydantic"
+      ],
+      "departments": [
+        "development"
+      ],
+      "filepath": "builtin\\02-development\\python\\fastapi_api.skill.md"
+    },
+    {
+      "name": "python_backend",
+      "version": "1.0.0",
+      "display_name": "Python Backend Developer",
+      "description": "Разработка бэкенда на Python: FastAPI, SQLAlchemy, Pydantic, тесты",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "python",
+        "backend",
+        "fastapi",
+        "api",
+        "databases",
+        "testing",
+        "sqlalchemy"
+      ],
+      "departments": [
+        "development"
+      ],
+      "filepath": "builtin\\02-development\\python\\python_backend.skill.md"
+    },
+    {
+      "name": "microservices",
+      "version": "1.0.0",
+      "display_name": "Microservices Architect",
+      "description": "Проектирование микросервисной архитектуры",
+      "type": "builtin",
+      "grade": "S",
+      "tags": [
+        "architecture",
+        "microservices",
+        "soa",
+        "event-driven",
+        "ddd"
+      ],
+      "departments": [
+        "architecture"
+      ],
+      "filepath": "builtin\\03-architecture\\microservices.skill.md"
+    },
+    {
+      "name": "system_design",
+      "version": "1.0.0",
+      "display_name": "System Architect",
+      "description": "Проектирование архитектуры программных систем и микросервисов",
+      "type": "builtin",
+      "grade": "S",
+      "tags": [
+        "architecture",
+        "system-design",
+        "microservices",
+        "scalability",
+        "patterns"
+      ],
+      "departments": [
+        "architecture"
+      ],
+      "filepath": "builtin\\03-architecture\\system_design.skill.md"
+    },
+    {
+      "name": "pytest_automation",
+      "version": "1.0.0",
+      "display_name": "Test Automation Engineer (pytest)",
+      "description": "Автоматизация тестирования на pytest: unit, integration, e2e",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "testing",
+        "pytest",
+        "automation",
+        "python",
+        "ci"
+      ],
+      "departments": [
+        "qa"
+      ],
+      "filepath": "builtin\\04-qa\\pytest_automation.skill.md"
+    },
+    {
+      "name": "ci_cd",
+      "version": "1.0.0",
+      "display_name": "CI/CD Engineer",
+      "description": "Настройка пайплайнов CI/CD, GitHub Actions, GitLab CI",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "ci-cd",
+        "github-actions",
+        "gitlab-ci",
+        "automation",
+        "devops"
+      ],
+      "departments": [
+        "devops"
+      ],
+      "filepath": "builtin\\05-devops\\ci_cd.skill.md"
+    },
+    {
+      "name": "docker_k8s",
+      "version": "1.0.0",
+      "display_name": "DevOps Engineer (Docker + Kubernetes)",
+      "description": "Контейнеризация, оркестрация и управление инфраструктурой",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "docker",
+        "kubernetes",
+        "devops",
+        "containers",
+        "orchestration"
+      ],
+      "departments": [
+        "devops"
+      ],
+      "filepath": "builtin\\05-devops\\docker_k8s.skill.md"
+    },
+    {
+      "name": "ui_ux_figma",
+      "version": "1.0.0",
+      "display_name": "UI/UX Designer (Figma)",
+      "description": "Дизайн пользовательских интерфейсов и UX-исследования в Figma",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "design",
+        "figma",
+        "ui",
+        "ux",
+        "prototyping",
+        "accessibility"
+      ],
+      "departments": [
+        "design"
+      ],
+      "filepath": "builtin\\06-design\\ui_ux_figma.skill.md"
+    },
+    {
+      "name": "etl_pipelines",
+      "version": "1.0.0",
+      "display_name": "Data Engineer (ETL/ELT)",
+      "description": "Построение пайплайнов данных, ETL, DWH, оптимизация",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "etl",
+        "data-engineering",
+        "pipelines",
+        "sql",
+        "dwh",
+        "airflow"
+      ],
+      "departments": [
+        "data"
+      ],
+      "filepath": "builtin\\07-data\\data_engineering\\etl_pipelines.skill.md"
+    },
+    {
+      "name": "ml_pipeline",
+      "version": "1.0.0",
+      "display_name": "ML Engineer",
+      "description": "Построение ML-моделей, пайплайнов и MLOps",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "ml",
+        "machine-learning",
+        "python",
+        "pytorch",
+        "mops"
+      ],
+      "departments": [
+        "data"
+      ],
+      "filepath": "builtin\\07-data\\data_science\\ml_pipeline.skill.md"
+    },
+    {
+      "name": "pentest",
+      "version": "1.0.0",
+      "display_name": "Security Engineer — Pentest",
+      "description": "Тестирование на проникновение, анализ уязвимостей",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "security",
+        "pentest",
+        "vulnerabilities",
+        "owasp",
+        "audit"
+      ],
+      "departments": [
+        "security"
+      ],
+      "filepath": "builtin\\08-security\\pentest.skill.md"
+    },
+    {
+      "name": "performance_review",
+      "version": "1.0.0",
+      "display_name": "HR — Performance Review",
+      "description": "Оценка производительности команды, сбор метрик, рекомендации",
+      "type": "builtin",
+      "grade": "S",
+      "tags": [
+        "hr",
+        "performance",
+        "review",
+        "metrics",
+        "analytics"
+      ],
+      "departments": [
+        "hr"
+      ],
+      "filepath": "builtin\\09-hr\\performance_review.skill.md"
+    },
+    {
+      "name": "oss_licenses",
+      "version": "1.0.0",
+      "display_name": "Legal — OSS Licenses & IP",
+      "description": "Управление открытыми лицензиями и интеллектуальной собственностью",
+      "type": "builtin",
+      "grade": "S",
+      "tags": [
+        "legal",
+        "licenses",
+        "oss",
+        "ip",
+        "compliance"
+      ],
+      "departments": [
+        "legal"
+      ],
+      "filepath": "builtin\\10-legal\\oss_licenses.skill.md"
+    },
+    {
+      "name": "content_marketing",
+      "version": "1.0.0",
+      "display_name": "Content Marketing Manager",
+      "description": "Создание контента, SEO, копирайтинг, контент-стратегия",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "marketing",
+        "content",
+        "seo",
+        "copywriting",
+        "social-media"
+      ],
+      "departments": [
+        "marketing"
+      ],
+      "filepath": "builtin\\11-marketing\\content_marketing.skill.md"
+    },
+    {
+      "name": "prototyping",
+      "version": "1.0.0",
+      "display_name": "R&D — Rapid Prototyping",
+      "description": "Быстрое прототипирование, PoC, исследование технологий",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "research",
+        "prototyping",
+        "poc",
+        "innovation",
+        "benchmarking"
+      ],
+      "departments": [
+        "rd"
+      ],
+      "filepath": "builtin\\12-rd\\prototyping.skill.md"
+    }
+  ]
+}

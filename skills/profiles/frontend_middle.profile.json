@@ -1,0 +1,13 @@
+{
+  "name": "frontend_middle",
+  "version": "1.0.0",
+  "display_name": "Middle Frontend Developer",
+  "description": "Разработка UI на React + TypeScript",
+  "skills": [
+    "react_frontend"
+  ],
+  "departments": ["development"],
+  "grade": "M",
+  "tags": ["frontend", "react", "typescript", "web"],
+  "icon": "💻"
+}

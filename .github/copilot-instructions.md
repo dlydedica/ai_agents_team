@@ -24,3 +24,11 @@ python mcp-server/server.py --transport http
 ```
 Сервер будет доступен на `http://localhost:8000/mcp`.
 Конфигурация подключения: `mcp.json` → `ai-agents-coordinator`
+
+## 📚 Библиотека скилов
+
+Команда имеет собственную библиотеку навыков в `ai_agents_team/skills/`:
+- `python team.py skills list` — список всех скилов
+- `python team.py skills profiles` — профили агентов
+- `python team.py skills active <project>` — активные скилы проекта
+- `python skills/loader.py install <url>` — подключить внешние скилы

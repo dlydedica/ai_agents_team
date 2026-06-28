@@ -1,0 +1,8 @@
+# External skills — устанавливаются через loader.py
+# Содержимое генерируется автоматически
+
+# Игнорируем всё, кроме registry.json и README.md
+*
+!.gitignore
+!registry.json
+!README.md

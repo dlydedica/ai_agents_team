@@ -1,0 +1,17 @@
+{
+  "name": "ml_engineer",
+  "version": "1.0.0",
+  "display_name": "ML Engineer",
+  "description": "Разработка ML-моделей, пайплайнов, MLOps",
+  "skills": [
+    "python_backend",
+    "ml_pipeline",
+    "etl_pipelines",
+    "postgresql",
+    "docker_k8s"
+  ],
+  "departments": ["data", "development"],
+  "grade": "S",
+  "tags": ["ml", "data-science", "python", "pytorch", "mlops"],
+  "icon": "🧪"
+}

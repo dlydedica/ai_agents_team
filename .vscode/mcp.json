@@ -3,18 +3,27 @@
     "ai-agents-coordinator": {
       "type": "stdio",
       "command": "python",
-      "args": ["${workspaceFolder}/mcp-server/server.py"],
-      "description": "🧠 Координатор AI-команды: управление задачами, handoff, эскалация",
+      "args": [
+        "${workspaceFolder}/mcp-server/server.py"
+      ],
+      "description": "🧠 Координатор AI-команды: задачи, скилы, handoff",
       "autoApprove": [
         "create_task",
-        "assign_to_department",
-        "complete_department_task",
-        "handoff",
-        "get_task_status",
-        "get_task_timeline",
         "list_active_tasks",
+        "assign_to_department",
+        "get_profile",
+        "assign_skills_to_agent",
+        "handoff",
         "log_event",
-        "escalate"
+        "escalate",
+        "get_task_timeline",
+        "complete_department_task",
+        "list_profiles",
+        "get_project_config",
+        "list_skills",
+        "set_project_config",
+        "get_skill",
+        "get_task_status"
       ]
     }
   }

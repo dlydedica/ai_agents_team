@@ -15,6 +15,11 @@ from datetime import datetime, timezone
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "mcp-server"))
 from task_store import get_all_tasks, STORAGE_DIR
 
+# Добавляем skills/ для загрузки данных скилов
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "skills"))
+from registry import discover_skills as skills_discover
+from manager import list_profiles as skills_profiles
+
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -48,6 +53,64 @@ STATUS_COLORS = {
     "completed": "#10b981",
     "escalated": "#ef4444",
 }
+
+
+def _load_skills_data() -> dict:
+    """Загрузить данные скилов для дашборда."""
+    try:
+        skills = skills_discover()
+        profiles = skills_profiles()
+
+        by_dept = {}
+        for s in skills:
+            meta = s["frontmatter"]
+            for dept in meta.get("departments", []):
+                if dept not in by_dept:
+                    by_dept[dept] = {"count": 0, "grades": set(), "tags": set()}
+                by_dept[dept]["count"] += 1
+                grade = meta.get("grade", "")
+                if grade:
+                    by_dept[dept]["grades"].add(grade)
+                for tag in meta.get("tags", []):
+                    by_dept[dept]["tags"].add(tag)
+
+        by_dept_list = [
+            {
+                "id": dept_id,
+                "emoji": DEPARTMENT_EMOJI.get(dept_id, "\U0001f4c1"),
+                "label": DEPARTMENT_LABELS.get(dept_id, dept_id),
+                "count": data["count"],
+                "grades": ", ".join(sorted(data["grades"])),
+                "tags": ", ".join(list(data["tags"])[:5]),
+            }
+            for dept_id, data in sorted(by_dept.items())
+        ]
+
+        by_grade = {}
+        for s in skills:
+            grade = s["frontmatter"].get("grade", "")
+            if grade:
+                by_grade[grade] = by_grade.get(grade, 0) + 1
+
+        return {
+            "total_skills": len(skills),
+            "total_profiles": len(profiles),
+            "by_department": by_dept_list,
+            "by_grade": by_grade,
+            "profiles": [
+                {
+                    "name": p.get("name", ""),
+                    "display_name": p.get("display_name", ""),
+                    "grade": p.get("grade", ""),
+                    "skills_count": len(p.get("skills", [])),
+                    "icon": p.get("icon", "\U0001f464"),
+                }
+                for p in profiles
+            ],
+        }
+    except Exception as e:
+        return {"error": str(e), "total_skills": 0, "total_profiles": 0,
+                "by_department": [], "by_grade": {}, "profiles": []}
 
 
 def load_data() -> dict:
@@ -97,8 +160,11 @@ def load_data() -> dict:
         reverse=True,
     )
 
+    skills_data = _load_skills_data()
+
     return {
         "tasks": tasks,
+        "skills": skills_data,
         "departments": [
             {
                 "id": dept_id,

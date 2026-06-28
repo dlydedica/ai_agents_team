@@ -1,0 +1,16 @@
+{
+  "project": "default",
+  "description": "Конфигурация по умолчанию — все профили и скилы",
+  "workflow": "default",
+  "active_agents": [
+    {"name": "ceo",           "profile": "tech_lead"},
+    {"name": "product",       "profile": "product_manager"},
+    {"name": "architecture",  "profile": "system_architect"},
+    {"name": "development",   "profile": "fullstack_dev"},
+    {"name": "qa",            "profile": "qa_automation"},
+    {"name": "devops",        "profile": "devops_engineer"}
+  ],
+  "skill_overrides": {},
+  "external_skills": [],
+  "active_skills_only": false
+}

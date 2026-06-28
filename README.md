@@ -183,6 +183,31 @@ python ai_agents_team/integration/integrate.py .
 # 5. Опишите задачу
 ```
 
+### Обновление в интегрированном проекте
+
+Когда проект уже содержит `ai_agents_team` и вы хотите получить новую версию:
+
+```bash
+# Для git submodule
+cd /путь/к/вашему/проекту
+git submodule update --remote ai_agents_team
+python ai_agents_team/integration/update.py .
+
+# Для простой копии
+python /путь/к/ai_agents_team/integration/update.py /путь/к/вашему/проекту
+
+# Режим проверки (без реальных изменений)
+python ai_agents_team/integration/update.py . --dry-run
+```
+
+**Что делает обновление:**
+- 🔄 Синхронизирует `ai_agents_team` (git pull / перекопирование)
+- 🔌 Добавляет новые MCP-инструменты в `autoApprove`
+- 📚 Добавляет секцию skills в инструкции Copilot
+- 📦 Обновляет зависимости pip
+
+После обновления перезагрузите окно VS Code (`Ctrl+Shift+P` → `Reload Window`).
+
 ## Структура репозитория
 
 ```

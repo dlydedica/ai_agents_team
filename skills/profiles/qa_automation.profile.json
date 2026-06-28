@@ -1,0 +1,14 @@
+{
+  "name": "qa_automation",
+  "version": "1.0.0",
+  "display_name": "QA Automation Engineer",
+  "description": "Автоматизация тестирования: pytest, Playwright, CI-интеграция",
+  "skills": [
+    "pytest_automation",
+    "python_backend"
+  ],
+  "departments": ["qa"],
+  "grade": "M",
+  "tags": ["qa", "testing", "automation", "pytest", "python"],
+  "icon": "🤖"
+}

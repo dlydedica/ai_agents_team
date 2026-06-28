@@ -1,0 +1,15 @@
+{
+  "name": "devops_engineer",
+  "version": "1.0.0",
+  "display_name": "DevOps Engineer",
+  "description": "CI/CD, контейнеризация, Kubernetes, инфраструктура",
+  "skills": [
+    "docker_k8s",
+    "ci_cd",
+    "redis_cache"
+  ],
+  "departments": ["devops"],
+  "grade": "M",
+  "tags": ["devops", "docker", "kubernetes", "ci-cd", "infrastructure"],
+  "icon": "⚙️"
+}

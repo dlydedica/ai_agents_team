@@ -1,0 +1,16 @@
+{
+  "name": "fullstack_dev",
+  "version": "1.0.0",
+  "display_name": "Fullstack Web Developer",
+  "description": "Разработка веб-приложений: frontend + backend",
+  "skills": [
+    "python_backend",
+    "react_frontend",
+    "postgresql",
+    "fullstack_web"
+  ],
+  "departments": ["development"],
+  "grade": "M",
+  "tags": ["web", "fullstack", "python", "react", "typescript"],
+  "icon": "🔄"
+}

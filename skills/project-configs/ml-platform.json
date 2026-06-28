@@ -1,0 +1,28 @@
+{
+  "project": "ml-platform",
+  "description": "ML-платформа: дашборды, модели, пайплайны",
+  "workflow": "default",
+  "active_agents": [
+    {"name": "ceo",           "profile": "tech_lead"},
+    {"name": "product",       "profile": "product_manager"},
+    {"name": "architecture",  "profile": "system_architect"},
+    {"name": "ml_engineer",   "profile": "ml_engineer"},
+    {"name": "data_engineer", "profile": "data_engineer"},
+    {"name": "qa",            "profile": "qa_automation"},
+    {"name": "devops",        "profile": "devops_engineer"}
+  ],
+  "skill_overrides": {
+    "ml_engineer": {
+      "add": ["k8s_management", "fastapi_api"],
+      "remove": []
+    },
+    "devops": {
+      "add": ["mlflow_deployment"],
+      "remove": []
+    }
+  },
+  "external_skills": [
+    {"name": "mlflow_deployment", "source": "community-mlops"}
+  ],
+  "active_skills_only": true
+}

@@ -1,0 +1,16 @@
+{
+  "name": "data_engineer",
+  "version": "1.0.0",
+  "display_name": "Data Engineer",
+  "description": "Построение ETL-пайплайнов, DWH, оптимизация данных",
+  "skills": [
+    "etl_pipelines",
+    "postgresql",
+    "python_backend",
+    "docker_k8s"
+  ],
+  "departments": ["data"],
+  "grade": "M",
+  "tags": ["data", "etl", "pipelines", "sql", "dwh"],
+  "icon": "🔧"
+}

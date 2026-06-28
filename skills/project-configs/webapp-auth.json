@@ -1,0 +1,26 @@
+{
+  "project": "webapp-auth",
+  "description": "Веб-приложение с JWT-аутентификацией",
+  "workflow": "default",
+  "active_agents": [
+    {"name": "ceo",              "profile": "tech_lead"},
+    {"name": "product",          "profile": "product_manager"},
+    {"name": "architecture",     "profile": "system_architect"},
+    {"name": "backend_senior",   "profile": "backend_senior"},
+    {"name": "frontend_dev",     "profile": "frontend_middle"},
+    {"name": "qa",               "profile": "qa_automation"},
+    {"name": "devops",           "profile": "devops_engineer"}
+  ],
+  "skill_overrides": {
+    "backend_senior": {
+      "add": ["fastapi_api"],
+      "remove": ["microservices"]
+    },
+    "frontend_dev": {
+      "add": ["react_frontend"],
+      "remove": []
+    }
+  },
+  "external_skills": [],
+  "active_skills_only": false
+}

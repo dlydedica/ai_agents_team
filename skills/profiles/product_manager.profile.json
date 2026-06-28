@@ -1,0 +1,13 @@
+{
+  "name": "product_manager",
+  "version": "1.0.0",
+  "display_name": "Product Manager",
+  "description": "Анализ требований, спецификации, управление продуктом",
+  "skills": [
+    "orchestration"
+  ],
+  "departments": ["product"],
+  "grade": "S",
+  "tags": ["product", "management", "requirements", "strategy"],
+  "icon": "👔"
+}

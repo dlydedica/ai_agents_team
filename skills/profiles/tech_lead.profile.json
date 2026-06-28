@@ -1,0 +1,16 @@
+{
+  "name": "tech_lead",
+  "version": "1.0.0",
+  "display_name": "Tech Lead",
+  "description": "Глава отдела разработки — управление командой, code review, архитектура",
+  "skills": [
+    "python_backend",
+    "system_design",
+    "postgresql",
+    "orchestration"
+  ],
+  "departments": ["development"],
+  "grade": "S",
+  "tags": ["leadership", "management", "architecture", "backend"],
+  "icon": "👔"
+}

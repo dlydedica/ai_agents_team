@@ -39,8 +39,6 @@ from datetime import datetime, timezone
 sys.path.insert(0, str(Path(__file__).parent))
 
 DEPARTMENTS_DIR = Path(__file__).parent / "departments"
-
-DEPARTMENTS_DIR = Path(__file__).parent / "departments"
 ORCHESTRATION_DIR = Path(__file__).parent / "orchestration"
 INTERACTIONS_DIR = Path(__file__).parent / "interactions"
 WORKFLOWS_DIR = Path(__file__).parent / "workflows"

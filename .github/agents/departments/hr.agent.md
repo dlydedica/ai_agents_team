@@ -1,7 +1,9 @@
 ---
 description: "👥 HR Agent — управление командой: баланс, найм, увольнение, скилы"
+name: "👥 HR — HR-менеджер AI-команды"
 tools: [read, search, edit, execute]
 user-invocable: true
+argument-hint: "Опишите HR-задачу (отбалансируй, уволь, найди скилы...)"
 ---
 
 # 👥 HR Agent — Здоровье команды

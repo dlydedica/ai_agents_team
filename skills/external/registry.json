@@ -8,8 +8,12 @@
       "url": "https://github.com/dart-lang/skills.git",
       "branch": "main",
       "description": "Официальные скилы Dart от команды Dart",
-      "departments": ["development"],
-      "technologies": ["dart"],
+      "departments": [
+        "development"
+      ],
+      "technologies": [
+        "dart"
+      ],
       "installed": true,
       "path": "external\\dart-lang-skills"
     },
@@ -19,8 +23,14 @@
       "url": "https://github.com/flutter/skills.git",
       "branch": "main",
       "description": "Официальные скилы Flutter от команды Flutter",
-      "departments": ["development", "design"],
-      "technologies": ["flutter", "dart"],
+      "departments": [
+        "development",
+        "design"
+      ],
+      "technologies": [
+        "flutter",
+        "dart"
+      ],
       "installed": true,
       "path": "external\\flutter-skills"
     },
@@ -30,8 +40,16 @@
       "url": "https://github.com/StacDev/stac.git",
       "branch": "dev",
       "description": "Официальные скилы Stac SDUI: quickstart, screen-builder, custom-extensions, troubleshooter",
-      "departments": ["development", "design"],
-      "technologies": ["flutter", "dart", "stac", "sdui"],
+      "departments": [
+        "development",
+        "design"
+      ],
+      "technologies": [
+        "flutter",
+        "dart",
+        "stac",
+        "sdui"
+      ],
       "installed": true,
       "path": "external\\stac"
     },
@@ -41,8 +59,14 @@
       "url": "https://github.com/kevmoo/dash_skills.git",
       "branch": "main",
       "description": "Личные скилы Dart/Flutter от kevmoo",
-      "departments": ["development"],
-      "technologies": ["dart", "flutter", "testing"],
+      "departments": [
+        "development"
+      ],
+      "technologies": [
+        "dart",
+        "flutter",
+        "testing"
+      ],
       "installed": false
     },
     {
@@ -51,8 +75,13 @@
       "url": "https://github.com/mattpocock/skills.git",
       "branch": "main",
       "description": "Скилы продуктивности: инженерия, TypeScript, общие практики",
-      "departments": ["development"],
-      "technologies": ["typescript", "javascript"],
+      "departments": [
+        "development"
+      ],
+      "technologies": [
+        "typescript",
+        "javascript"
+      ],
       "installed": false
     },
     {
@@ -60,10 +89,18 @@
       "repo": "obra/superpowers",
       "url": "https://github.com/obra/superpowers.git",
       "branch": "main",
-      "description": "Superpowers: TDD, отладка, планирование — общие скилы",
-      "departments": ["development", "qa"],
-      "technologies": ["testing"],
-      "installed": false
+      "description": "Superpowers: TDD, отладка, планирование, writing-skills и др.",
+      "departments": [
+        "development",
+        "qa",
+        "docs"
+      ],
+      "technologies": [
+        "testing",
+        "general"
+      ],
+      "installed": true,
+      "path": "external\\superpowers"
     },
     {
       "name": "ofis-ai-marketplace",
@@ -71,10 +108,40 @@
       "url": "https://ofis-ai.ru/skills",
       "branch": null,
       "description": "Маркетплейс 1306+ скилов для Claude Code на русском. По профессиям и категориям.",
-      "departments": ["development", "design", "qa", "devops", "data", "marketing", "product", "docs", "hr", "legal", "rd", "security"],
-      "technologies": ["general"],
+      "departments": [
+        "development",
+        "design",
+        "qa",
+        "devops",
+        "data",
+        "marketing",
+        "product",
+        "docs",
+        "hr",
+        "legal",
+        "rd",
+        "security"
+      ],
+      "technologies": [
+        "general"
+      ],
       "installed": false
     }
   ],
-  "skills": []
+  "skills": [
+    "brainstorming",
+    "dispatching-parallel-agents",
+    "executing-plans",
+    "finishing-a-development-branch",
+    "receiving-code-review",
+    "requesting-code-review",
+    "subagent-driven-development",
+    "systematic-debugging",
+    "test-driven-development",
+    "using-git-worktrees",
+    "using-superpowers",
+    "verification-before-completion",
+    "writing-plans",
+    "writing-skills"
+  ]
 }

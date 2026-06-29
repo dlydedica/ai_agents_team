@@ -951,6 +951,264 @@ def _skills_scan(project_path: str = "."):
     print(f"  🏷️  Теги для поиска: {' '.join(tags)}\n")
 
 
+def _hr_interactive():
+    """Интерактивное меню HR."""
+    actions = [
+        ("📊 Баланс скилов", "_hr_balance"),
+        ("💡 Предложить сотрудника", "_hr_suggest"),
+        ("👤 Создать сотрудника", "_hr_hire"),
+        ("🗄️ Уволить сотрудника", "_hr_fire"),
+        ("⏸️  Приостановить сотрудника", "_hr_pause"),
+        ("▶️  Восстановить сотрудника", "_hr_resume"),
+        ("⭐ Оценить сотрудника", "_hr_rate"),
+        ("📉 Понизить сотрудника", "_hr_demote"),
+        ("🔄 Перебалансировать скилы", "_hr_rebalance"),
+        ("📋 Статус сотрудников", "_hr_status"),
+        ("❌ Выход", "_exit"),
+    ]
+
+    while True:
+        print(f"\n{'='*50}")
+        print(f"  👥 HR — Панель управления командой")
+        print(f"{'='*50}\n")
+
+        for i, (label, _) in enumerate(actions, 1):
+            print(f"  {i:2d}. {label}")
+
+        try:
+            choice = input(f"\n  Выберите действие (1-{len(actions)}): ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
+
+        if not choice.isdigit() or int(choice) < 1 or int(choice) > len(actions):
+            print("  ❌ Некорректный ввод")
+            continue
+
+        idx = int(choice) - 1
+        action = actions[idx][1]
+
+        if action == "_exit":
+            print("\n  👋 Выход\n")
+            break
+        elif action == "_hr_balance":
+            _hr_balance()
+        elif action == "_hr_suggest":
+            _hr_suggest()
+        elif action == "_hr_hire":
+            _hr_hire()
+        elif action == "_hr_fire":
+            _hr_fire_interactive()
+        elif action == "_hr_pause":
+            _hr_pause_interactive()
+        elif action == "_hr_resume":
+            _hr_resume_interactive()
+        elif action == "_hr_rate":
+            _hr_rate_interactive()
+        elif action == "_hr_demote":
+            _hr_demote_interactive()
+        elif action == "_hr_rebalance":
+            _hr_rebalance()
+        elif action == "_hr_status":
+            _hr_status()
+
+        input("\n  Нажмите Enter чтобы продолжить...")
+
+
+def _hr_balance():
+    """Показать баланс скилов."""
+    from departments.hr.skill_balance import analyze_balance, print_report
+    reports = analyze_balance()
+    print_report(reports)
+
+
+def _hr_suggest():
+    """Предложить нового сотрудника."""
+    from departments.hr.agent_factory import analyze_hiring_need, suggest_new_agent
+    hire = analyze_hiring_need()
+    if not hire["need_hire"]:
+        print("\n  ✅ Новый сотрудник не требуется — баланс в норме")
+    else:
+        print(f"\n👥 HR — Анализ потребности в новом сотруднике\n")
+        for r in hire["reasons"]:
+            print(f"  ⚠️  {r}")
+        suggestion = suggest_new_agent()
+        if "error" not in suggestion:
+            print(f"\n  Предлагается: {suggestion['emoji']} {suggestion['role']}")
+            print(f"  Скилы: {', '.join(suggestion['skills'])}")
+
+
+def _hr_hire():
+    """Создать сотрудника."""
+    from departments.hr.agent_factory import suggest_new_agent, create_agent
+    from departments.hr.agent_factory import rebalance_skills
+    result = create_agent(suggest_new_agent())
+    if "error" in result:
+        print(f"  ❌ {result['error']}")
+    else:
+        print(f"\n👥 HR — Создан: {result['name']} ✅")
+        print(f"  Скилы: {', '.join(result['skills'])}")
+        rb = rebalance_skills(dry_run=False)
+        if rb["changes"]:
+            print(f"  🔄 Перебалансировано: {rb['total_rebalanced']} сотрудников")
+        _hr_auto_rebalance()
+
+
+def _hr_fire_interactive():
+    """Интерактивное увольнение."""
+    from departments.hr.lifecycle import get_all_members, archive_member
+    members = [m for m in get_all_members() if m["status"] == "active"]
+    if not members:
+        print("\n  Нет активных сотрудников")
+        return
+    print("\n  Выберите сотрудника для увольнения:\n")
+    for i, m in enumerate(members, 1):
+        print(f"  {i}. {m['name']} — {m.get('role', '')}")
+    try:
+        choice = input(f"\n  Номер (1-{len(members)}): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        return
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(members):
+        print("  ❌ Некорректный ввод")
+        return
+    name = members[int(choice) - 1]["name"]
+    reason = input("  Причина (Enter — без причины): ").strip()
+    result = archive_member(name, reason)
+    if "error" in result:
+        print(f"  ❌ {result['error']}")
+    else:
+        print(f"\n  🗄️  {name} уволен")
+        if result["skills_freed"]:
+            print(f"  🔄 Освобождены: {', '.join(result['skills_freed'])}")
+
+
+def _hr_pause_interactive():
+    """Интерактивная пауза."""
+    from departments.hr.lifecycle import get_all_members, set_status
+    members = [m for m in get_all_members() if m["status"] == "active"]
+    if not members:
+        print("\n  Нет активных сотрудников")
+        return
+    print("\n  Кого приостановить?\n")
+    for i, m in enumerate(members, 1):
+        print(f"  {i}. {m['name']}")
+    try:
+        choice = input(f"\n  Номер (1-{len(members)}): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        return
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(members):
+        print("  ❌ Некорректный ввод")
+        return
+    name = members[int(choice) - 1]["name"]
+    reason = input("  Причина (Enter — отпуск): ").strip() or "Отправлен в отпуск"
+    set_status(name, "paused", reason)
+    print(f"\n  ⏸️  {name} приостановлен")
+
+
+def _hr_resume_interactive():
+    """Интерактивное восстановление."""
+    from departments.hr.lifecycle import get_all_members, set_status
+    members = [m for m in get_all_members() if m["status"] == "paused"]
+    if not members:
+        print("\n  Нет приостановленных сотрудников")
+        return
+    print("\n  Кого восстановить?\n")
+    for i, m in enumerate(members, 1):
+        print(f"  {i}. {m['name']}")
+    try:
+        choice = input(f"\n  Номер (1-{len(members)}): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        return
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(members):
+        print("  ❌ Некорректный ввод")
+        return
+    name = members[int(choice) - 1]["name"]
+    set_status(name, "active", "Возвращён в команду")
+    print(f"\n  ✅ {name} возвращён")
+
+
+def _hr_rate_interactive():
+    """Интерактивная оценка."""
+    from departments.hr.lifecycle import get_all_members, set_rating
+    members = [m for m in get_all_members() if m["status"] == "active"]
+    if not members:
+        print("\n  Нет активных сотрудников")
+        return
+    print("\n  Кого оценить?\n")
+    for i, m in enumerate(members, 1):
+        print(f"  {i}. {m['name']} ⭐ {m.get('rating', 50)}/100")
+    try:
+        choice = input(f"\n  Номер (1-{len(members)}): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        return
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(members):
+        print("  ❌ Некорректный ввод")
+        return
+    name = members[int(choice) - 1]["name"]
+    try:
+        rating = int(input("  Оценка (0-100): ").strip())
+    except (EOFError, KeyboardInterrupt):
+        return
+    result = set_rating(name, rating)
+    if "error" in result:
+        print(f"  ❌ {result['error']}")
+    else:
+        print(f"\n  ⭐ {name}: {result['prev_rating']} → {result['rating']}")
+
+
+def _hr_demote_interactive():
+    """Интерактивное понижение."""
+    from departments.hr.lifecycle import get_all_members, demote_member
+    members = [m for m in get_all_members() if m["status"] == "active"]
+    if not members:
+        print("\n  Нет активных сотрудников")
+        return
+    print("\n  Кого понизить?\n")
+    for i, m in enumerate(members, 1):
+        print(f"  {i}. {m['name']}")
+    try:
+        choice = input(f"\n  Номер (1-{len(members)}): ").strip()
+    except (EOFError, KeyboardInterrupt):
+        return
+    if not choice.isdigit() or int(choice) < 1 or int(choice) > len(members):
+        print("  ❌ Некорректный ввод")
+        return
+    name = members[int(choice) - 1]["name"]
+    skills_input = input("  Какие скилы убрать? (Enter — последние 2): ").strip()
+    skills = skills_input.split() if skills_input else None
+    result = demote_member(name, skills)
+    if "error" in result:
+        print(f"  ❌ {result['error']}")
+    else:
+        print(f"\n  📉 {name}: убрано {', '.join(result['removed_skills'])}")
+
+
+def _hr_rebalance():
+    """Перебалансировать скилы."""
+    from departments.hr.agent_factory import rebalance_skills
+    result = rebalance_skills(dry_run=False)
+    if not result["changes"]:
+        print("\n  ✅ Перегруженных нет")
+    else:
+        print(f"\n  🔄 Перебалансировано {result['total_rebalanced']} сотрудников")
+        for c in result["changes"]:
+            print(f"     • {c['member']}: убрано {len(c['remove'])} скилов")
+
+
+def _hr_status():
+    """Статус сотрудников."""
+    from departments.hr.lifecycle import get_status_report
+    members = get_status_report()
+    print(f"\n👥 HR — Статус сотрудников\n")
+    for m in members:
+        s = m["status"]
+        emoji = {"active": "✅", "paused": "⏸️", "archived": "🗄️"}.get(s, "❓")
+        stars = "⭐" * (m.get("rating", 50) // 20)
+        print(f"  {emoji} {m['name']:30s} | {s:10s} | {stars} {m.get('rating', 0):3d}")
+        if m.get("note"):
+            print(f"       {m['note']}")
+
+
 def _hr_auto_rebalance():
     """Авто-запуск HR при изменениях в скилах."""
     try:
@@ -1124,7 +1382,10 @@ def main():
                 print(f"  ❌ Ошибка: {e}")
 
     elif command == "hr":
-        subcmd = sys.argv[2] if len(sys.argv) > 2 else "balance"
+        subcmd = sys.argv[2] if len(sys.argv) > 2 else "menu"
+        if subcmd == "menu":
+            _hr_interactive()
+            return
         if subcmd == "balance":
             from departments.hr.skill_balance import analyze_balance, print_report
             reports = analyze_balance()

@@ -527,53 +527,80 @@ def technologies_to_search_tags(technologies: list[ProjectTech]) -> list[str]:
     return sorted(tags)
 
 
-def auto_extend_known_repos(technologies: list[ProjectTech]) -> list[dict]:
-    """Предлагает новые записи для known_repos.json на основе технологий.
+def auto_extend_known_repos(technologies: list[ProjectTech]) -> dict:
+    """Анализирует, какие технологии покрыты скилами, и ищет новые на GitHub.
 
     Args:
         technologies: Список технологий из ScanResult
 
     Returns:
-        Список словарей-предложений для known_repos.json
+        dict с ключами:
+          - covered: технологии, для которых есть скилы
+          - uncovered: технологии без скилов
+          - github_found: найденные на GitHub репозитории
+          - github_error: ошибка GitHub API (если была)
+          - suggestions: список словарей-предложений для known_repos.json
     """
-    suggestions = []
     tech_names = set(t.name.lower() for t in technologies)
 
     from skills.discovery import KNOWN_SKILL_REPOS, search_github_skills
 
-    existing = set(KNOWN_SKILL_REPOS.keys())
+    # Какие технологии покрыты известными репозиториями
+    covered_techs = set()
+    for info in KNOWN_SKILL_REPOS.values():
+        for tech in info.get("technologies", []):
+            if tech.lower() in tech_names:
+                covered_techs.add(tech.lower())
 
-    # Для каждой технологии проверяем, есть ли уже скил
-    for tech_name in tech_names:
-        if tech_name in existing:
-            continue
+    uncovered = sorted(tech_names - covered_techs)
+    covered = sorted(tech_names & covered_techs)
 
-        # Ищем на GitHub
-        results = search_github_skills(tech_name, max_results=3)
-        for res in results:
-            repo_short = res["name"]
-            key = repo_short.replace("/", "-").lower()
+    suggestions = []
+    github_error = None
+    github_found = []
 
-            if key in existing:
-                continue
+    # Для непокрытых технологий пытаемся найти скилы на GitHub
+    for tech_name in uncovered:
+        try:
+            results = search_github_skills(tech_name, max_results=3)
+            if results:
+                for res in results:
+                    repo_short = res["name"]
+                    key = repo_short.replace("/", "-").lower()
 
-            # Определяем отделы
-            from skills.discovery import _technologies_to_departments
-            depts = _technologies_to_departments(res["technologies"])
+                    # Проверяем, нет ли уже такого репозитория в known
+                    already_known = False
+                    for info in KNOWN_SKILL_REPOS.values():
+                        if info["repo"].lower() == repo_short.lower():
+                            already_known = True
+                            break
+                    if already_known:
+                        continue
 
-            suggestions.append({
-                "key": key,
-                "repo": repo_short,
-                "url": res["url"],
-                "description": res.get("description", f"Скилы по {tech_name}")[:200],
-                "departments": depts,
-                "technologies": res.get("technologies", [tech_name]),
-                "stars": res.get("stars", 0),
-                "source": "auto-detected",
-            })
-            existing.add(key)
+                    from skills.discovery import _technologies_to_departments
+                    depts = _technologies_to_departments(res["technologies"])
 
-    return suggestions
+                    suggestions.append({
+                        "key": key,
+                        "repo": repo_short,
+                        "url": res["url"],
+                        "description": res.get("description", f"Скилы по {tech_name}")[:200],
+                        "departments": depts,
+                        "technologies": res.get("technologies", [tech_name]),
+                        "stars": res.get("stars", 0),
+                        "source": "auto-detected",
+                    })
+                    github_found.append(tech_name)
+        except Exception as e:
+            github_error = str(e)
+
+    return {
+        "covered": covered,
+        "uncovered": uncovered,
+        "github_found": github_found,
+        "github_error": github_error,
+        "suggestions": suggestions,
+    }
 
 
 # CLI

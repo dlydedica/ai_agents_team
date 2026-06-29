@@ -839,22 +839,33 @@ def _skills_scan(project_path: str = "."):
             print(f"     ✅ {t.name:25s} ({t.source_file})")
         print()
 
-    tags = technologies_to_search_tags(result.technologies)
-    print(f"  🏷️  Теги для поиска скилов: {', '.join(tags)}\n")
-    print(f"  💡 python team.py skills suggest {' '.join(tags)}\n")
+    # Анализ покрытия скилами
+    coverage = auto_extend_known_repos(result.technologies)
 
-    # Авто-расширение known_repos
-    suggestions = auto_extend_known_repos(result.technologies)
-    if suggestions:
-        print(f"  🌐 Обнаружено новых репозиториев со скилами ({len(suggestions)}):\n")
-        for s in sorted(suggestions, key=lambda x: -x.get("stars", 0))[:5]:
+    print(f"  📋 Покрытие скилами:\n")
+    if coverage["covered"]:
+        print(f"     ✅ Есть скилы: {', '.join(coverage['covered'])}")
+    if coverage["uncovered"]:
+        print(f"     ⚠️  Нет скилов: {', '.join(coverage['uncovered'])}")
+
+    # Поиск на GitHub
+    if coverage["suggestions"]:
+        print(f"\n  🌐 Найдено на GitHub ({len(coverage['suggestions'])} репозиториев):\n")
+        for s in sorted(coverage["suggestions"], key=lambda x: -x.get("stars", 0))[:5]:
             depts = ", ".join(s["departments"])
             print(f"     ⭐{s.get('stars', 0)} {s['key']} — {s.get('description', '')[:80]}")
             print(f"        отделы: {depts}")
             print(f"        установка: python team.py skills install {s['url']}")
             print()
-    else:
-        print("  ✅ Все необходимые репозитории уже известны\n")
+    elif coverage["uncovered"]:
+        print(f"\n  🌐 GitHub API недоступен — не удалось найти скилы в интернете.")
+        print(f"     💡 Можно добавить репозитории вручную в skills/known_repos.json\n")
+
+    if coverage["github_error"]:
+        print(f"  ⚠️  Ошибка GitHub: {coverage['github_error']}\n")
+
+    tags = technologies_to_search_tags(result.technologies)
+    print(f"  🏷️  Теги для поиска: {' '.join(tags)}\n")
 
 
 def _skills_report():

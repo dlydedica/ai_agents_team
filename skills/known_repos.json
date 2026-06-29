@@ -22,6 +22,90 @@
       "description": "Скилы Python-разработчика (бэкенд)",
       "departments": ["development"],
       "technologies": ["python", "fastapi", "django"]
+    },
+    "fastapi": {
+      "repo": "fastapi/skills",
+      "url": null,
+      "description": "Скилы FastAPI — лучшие практики, тесты, security",
+      "departments": ["development"],
+      "technologies": ["fastapi", "python"]
+    },
+    "react-typescript": {
+      "repo": "facebook/react-skills",
+      "url": null,
+      "description": "Скилы React + TypeScript: компоненты, хуки, Next.js",
+      "departments": ["development"],
+      "technologies": ["react", "typescript", "javascript"]
+    },
+    "sql-database": {
+      "repo": "community/sql-database-skills",
+      "url": null,
+      "description": "Скилы по SQL, MySQL, PostgreSQL: проектирование БД, оптимизация",
+      "departments": ["data"],
+      "technologies": ["sql", "mysql", "postgresql", "database"]
+    },
+    "redis-cache": {
+      "repo": "community/redis-skills",
+      "url": null,
+      "description": "Скилы по Redis: кэширование, очереди, Pub/Sub",
+      "departments": ["development", "devops"],
+      "technologies": ["redis", "cache"]
+    },
+    "docker-devops": {
+      "repo": "community/docker-devops-skills",
+      "url": null,
+      "description": "Скилы DevOps: Docker, Compose, Swarm, оптимизация образов",
+      "departments": ["devops"],
+      "technologies": ["docker", "devops"]
+    },
+    "ci-cd-github-actions": {
+      "repo": "community/ci-cd-skills",
+      "url": null,
+      "description": "Скилы CI/CD: GitHub Actions, GitLab CI, пайплайны",
+      "departments": ["devops"],
+      "technologies": ["ci/cd", "github-actions", "devops"]
+    },
+    "testing-pytest-jest": {
+      "repo": "community/testing-skills",
+      "url": null,
+      "description": "Скилы тестирования: pytest, Jest, интеграционные тесты",
+      "departments": ["qa"],
+      "technologies": ["testing", "pytest", "jest"]
+    },
+    "alembic-migrations": {
+      "repo": "community/alembic-skills",
+      "url": null,
+      "description": "Скилы по Alembic: миграции БД, ревью, best practices",
+      "departments": ["development"],
+      "technologies": ["alembic", "sqlalchemy", "python"]
+    },
+    "dash-skills": {
+      "repo": "kevmoo/dash_skills",
+      "url": "https://github.com/kevmoo/dash_skills.git",
+      "description": "Личные скилы Dart/Flutter от kevmoo: best practices, линтинг, документация",
+      "departments": ["development"],
+      "technologies": ["dart", "flutter", "testing"]
+    },
+    "general-productivity": {
+      "repo": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills.git",
+      "description": "Скилы продуктивности: инженерия, TypeScript, общие практики",
+      "departments": ["development"],
+      "technologies": ["typescript", "javascript", "general"]
+    },
+    "superpowers": {
+      "repo": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers.git",
+      "description": "Superpowers: TDD, отладка, планирование — общие скилы для инженеров",
+      "departments": ["development", "qa"],
+      "technologies": ["testing", "general"]
+    },
+    "awesome-copilot": {
+      "repo": "jefftern/awesome-copilot",
+      "url": "https://github.com/jefftern/awesome-copilot.git",
+      "description": "Большая коллекция скилов Copilot: pydantic, httpx, geoip, QA, CLI и др.",
+      "departments": ["development", "devops", "data"],
+      "technologies": ["python", "pydantic", "httpx", "geoip", "testing", "general"]
     }
   }
 }

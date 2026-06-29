@@ -206,8 +206,47 @@ dart devtools                         # Запуск DevTools
 
 ---
 
+## Подключенные внешние скилы
+
+В проекте установлены официальные скилы от команд Dart и Flutter. Реестр обнаружит их автоматически (`skills/external/`):
+
+### dart-lang/skills (11 скилов)
+| Скил | Описание |
+|------|----------|
+| `dart-add-unit-test` | Unit-тесты с `package:test` |
+| `dart-build-cli-app` | CLI-приложения: аргументы, exit codes |
+| `dart-collect-coverage` | Сбор coverage, LCOV-отчёты |
+| `dart-fix-runtime-errors` | Исправление ошибок по stack trace |
+| `dart-generate-test-mocks` | Mock-объекты через mockito |
+| `dart-migrate-to-checks-package` | Миграция matcher → checks |
+| `dart-resolve-package-conflicts` | Решение конфликтов pub-зависимостей |
+| `dart-run-static-analysis` | `dart analyze` + `dart fix` |
+| `dart-setup-ffi-assets` | Native Assets hooks (C/C++) |
+| `dart-use-ffigen` | FFI bindings через ffigen |
+| `dart-use-pattern-matching` | Pattern matching в Dart |
+
+### flutter/skills (10 скилов)
+| Скил | Описание |
+|------|----------|
+| `flutter-add-integration-test` | Интеграционные тесты |
+| `flutter-add-widget-preview` | Превью виджетов |
+| `flutter-add-widget-test` | Widget-тесты с WidgetTester |
+| `flutter-apply-architecture-best-practices` | Layered architecture |
+| `flutter-build-responsive-layout` | Адаптивная вёрстка |
+| `flutter-fix-layout-issues` | Исправление layout-ошибок |
+| `flutter-implement-json-serialization` | fromJson/toJson |
+| `flutter-setup-declarative-routing` | GoRouter, deep links |
+| `flutter-setup-localization` | Локализация (l10n) |
+| `flutter-use-http-package` | HTTP-запросы |
+
+### Как обновить
+```bash
+cd external/dart-lang-skills && git pull
+cd external/flutter-skills && git pull
+```
+
 ## Ожидания по грейдам
 
-- **Junior:** базовая верстка на Flutter, работа с setState/provuder, простые экраны
+- **Junior:** базовая верстка на Flutter, работа с setState/provider, простые экраны
 - **Middle:** самостоятельная разработка фич, state management (Riverpod/BLoC), GoRouter, интеграция API, тесты
 - **Senior:** архитектура проекта, кастомные платформенные плагины, оптимизация производительности, CI/CD, менторинг

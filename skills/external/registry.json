@@ -1,6 +1,21 @@
 {
   "$schema": "v1",
   "description": "Реестр внешних источников скилов AI DevCorp",
-  "sources": [],
+  "sources": [
+    {
+      "name": "dart-lang-skills",
+      "type": "git",
+      "url": "https://github.com/dart-lang/skills.git",
+      "branch": "main",
+      "path": "external\\dart-lang-skills"
+    },
+    {
+      "name": "flutter-skills",
+      "type": "git",
+      "url": "https://github.com/flutter/skills.git",
+      "branch": "main",
+      "path": "external\\flutter-skills"
+    }
+  ],
   "skills": []
 }

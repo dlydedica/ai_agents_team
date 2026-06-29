@@ -2,7 +2,7 @@
 Реестр скилов AI DevCorp.
 
 Отвечает за:
-  - Сканирование .skill.md файлов в builtin/ и external/
+  - Сканирование .skill.md / SKILL.md файлов в builtin/ и external/
   - Поиск и фильтрацию по отделам, грейдам, тегам
   - Генерацию manifest.json (индекс всех скилов)
   - Валидацию скилов (структура, обязательные поля)
@@ -19,8 +19,15 @@ BUILTIN_DIR = SKILLS_DIR / "builtin"
 EXTERNAL_DIR = SKILLS_DIR / "external"
 MANIFEST_FILE = SKILLS_DIR / "manifest.json"
 
-# Обязательные поля YAML-фронтматера скила
+# Паттерны для поиска файлов скилов:
+#   *.skill.md — наш формат (flutter_stac_sdui.skill.md)
+#   SKILL.md   — официальный формат (dart-lang, flutter, npx skills)
+SKILL_FILE_PATTERNS = ["*.skill.md", "SKILL.md"]
+
+# Обязательные поля YAML-фронтматера скила (наш формат)
+# Для внешних скилов (dart-lang, flutter) достаточно name + description
 REQUIRED_FRONTMATTER_FIELDS = {"name", "version", "description", "author", "type", "grade"}
+EXTERNAL_FRONTMATTER_FIELDS = {"name", "description"}
 
 VALID_TYPES = {"builtin", "external"}
 VALID_GRADES = {"J", "M", "S", "L"}
@@ -46,17 +53,25 @@ def _parse_skill_file(filepath: Path) -> Optional[dict]:
     meta = {}
 
     for line in yaml_text.strip().split("\n"):
-        line = line.strip()
-        if not line:
+        line_stripped = line.strip()
+        if not line_stripped:
             continue
-        if ":" in line:
-            key, _, value = line.partition(":")
+
+        # Пропускаем вложенные ключи (начинаются с пробела/табуляции)
+        if line.startswith(" ") or line.startswith("\t"):
+            continue
+
+        if ":" in line_stripped:
+            key, _, value = line_stripped.partition(":")
             key = key.strip()
             value = value.strip()
 
             # Многострочные списки (начинаются с -)
             if value == "" or value == "[]":
                 meta[key] = []
+            elif value == ">-" or value == "|":
+                # Многострочный YAML (пропускаем, берём первую строку)
+                meta[key] = ""
             elif value.startswith("[") and value.endswith("]"):
                 # [a, b, c]
                 meta[key] = [v.strip().strip("\"'") for v in value[1:-1].split(",")]
@@ -82,6 +97,14 @@ def _validate_skill(skill: dict) -> list[str]:
     """Валидирует скил, возвращает список ошибок."""
     errors = []
     meta = skill["frontmatter"]
+    skill_type = skill.get("skill_type", "builtin")
+
+    if skill_type == "external":
+        # Внешние скилы (dart-lang, flutter) имеют упрощённый формат
+        for field in EXTERNAL_FRONTMATTER_FIELDS:
+            if field not in meta:
+                errors.append(f"Отсутствует обязательное поле '{field}'")
+        return errors
 
     for field in REQUIRED_FRONTMATTER_FIELDS:
         if field not in meta:
@@ -102,8 +125,18 @@ def _validate_skill(skill: dict) -> list[str]:
     return errors
 
 
+def _discover_skill_files(directory: Path) -> list[Path]:
+    """Ищет все файлы скилов в директории по всем известным паттернам."""
+    found = []
+    for pattern in SKILL_FILE_PATTERNS:
+        for f in sorted(directory.rglob(pattern)):
+            if f not in found:
+                found.append(f)
+    return found
+
+
 def discover_skills(source: str = "all") -> list[dict]:
-    """Сканирует все .skill.md файлы и возвращает список скилов.
+    """Сканирует все .skill.md / SKILL.md файлы и возвращает список скилов.
 
     Args:
         source: "builtin" — только свои, "external" — только внешние, "all" — все
@@ -111,7 +144,7 @@ def discover_skills(source: str = "all") -> list[dict]:
     skills = []
 
     if source in ("all", "builtin") and BUILTIN_DIR.exists():
-        for skill_file in sorted(BUILTIN_DIR.rglob("*.skill.md")):
+        for skill_file in _discover_skill_files(BUILTIN_DIR):
             skill = _parse_skill_file(skill_file)
             if skill:
                 skill["skill_type"] = "builtin"
@@ -121,7 +154,7 @@ def discover_skills(source: str = "all") -> list[dict]:
                 skills.append(skill)
 
     if source in ("all", "external") and EXTERNAL_DIR.exists():
-        for skill_file in sorted(EXTERNAL_DIR.rglob("*.skill.md")):
+        for skill_file in _discover_skill_files(EXTERNAL_DIR):
             skill = _parse_skill_file(skill_file)
             if skill:
                 skill["skill_type"] = "external"

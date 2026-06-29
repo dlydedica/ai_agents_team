@@ -983,16 +983,20 @@ def _skills_sync():
     from skills.discovery import ALL_SOURCES
     from skills.loader import install_from_git
 
-    pending = [s for s in ALL_SOURCES if not s.get("installed") and s.get("url")]
+    pending = [s for s in ALL_SOURCES if not s.get("installed") and s.get("url") and "github.com" in s.get("url", "")]
+    skipped = [s for s in ALL_SOURCES if not s.get("installed") and s.get("url") and "github.com" not in s.get("url", "")]
     if not pending:
         print("\n✅ Все известные репозитории уже установлены\n")
         return
+
+    if skipped:
+        print(f"  ⏭️  Пропущено (не git: {', '.join(s['name'] for s in skipped)})\n")
 
     print(f"\n📦 Установка {len(pending)} репозиториев:\n")
     for s in pending:
         name = s["name"]
         url = s["url"]
-        branch = s.get("branch", "main")
+        branch = s.get("branch", "main") or "main"
         print(f"  ⬇️  {name} — {s.get('description', url)}")
         try:
             result = install_from_git(url, name, branch)
@@ -1141,6 +1145,7 @@ def main():
                     print(f"  💡 python team.py hr hire — создать\n")
         elif subcmd == "hire":
             from departments.hr.agent_factory import suggest_new_agent, create_agent
+            from departments.hr.agent_factory import rebalance_skills
             result = create_agent(suggest_new_agent())
             if "error" in result:
                 print(f"  ❌ {result['error']}")
@@ -1148,6 +1153,12 @@ def main():
                 print(f"\n👥 HR — Создан новый сотрудник: {result['name']}\n")
                 print(f"  ✅ Файл: {result['file']}")
                 print(f"  💡 Скилы: {', '.join(result['skills'])}")
+                # Авто-перебаланс: отбираем дубликаты у перегруженных
+                rb = rebalance_skills(dry_run=False)
+                if rb["changes"]:
+                    print(f"  🔄 Перебалансировано: {rb['total_rebalanced']} сотрудников")
+                    for c in rb["changes"]:
+                        print(f"     • {c['member']}: убрано {len(c['remove'])} скилов")
                 _hr_auto_rebalance()
         elif subcmd == "rebalance":
             from departments.hr.agent_factory import rebalance_skills

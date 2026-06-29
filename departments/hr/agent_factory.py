@@ -231,6 +231,13 @@ def create_agent(suggestion: dict) -> dict:
     skills = suggestion["skills"]
     description = suggestion["description"]
 
+    # Если имя занято — добавляем счётчик
+    counter = 1
+    base_name = name
+    while (MEMBERS_DIR / f"{name}.agent.md").exists():
+        counter += 1
+        name = f"{base_name}-v{counter}"
+
     # Форматируем скилы
     skills_text = "\n".join(f"- `{s}` — {s.replace('_', ' ').title()}" for s in skills)
 
@@ -260,9 +267,6 @@ def create_agent(suggestion: dict) -> dict:
 
     # Сохраняем файл
     agent_file = MEMBERS_DIR / f"{name}.agent.md"
-    if agent_file.exists():
-        return {"error": f"Сотрудник '{name}' уже существует: {agent_file}"}
-
     agent_file.write_text(content, encoding="utf-8")
 
     return {

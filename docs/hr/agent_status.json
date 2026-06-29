@@ -1,0 +1,14 @@
+{
+  "frontend": {
+    "status": "active",
+    "rating": 85,
+    "note": "Рейтинг изменён: 50 → 85",
+    "updated": "2026-06-29"
+  },
+  "flutter_specialist": {
+    "status": "active",
+    "rating": 50,
+    "note": "Возвращён в команду",
+    "updated": "2026-06-29"
+  }
+}

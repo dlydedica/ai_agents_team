@@ -1,18 +1,18 @@
 {
   "$schema": "v1",
-  "generated_at": "2026-06-28T15:27:08.166012",
-  "total": 21,
+  "generated_at": "2026-06-29T12:00:00.000000",
+  "total": 23,
   "by_type": {
-    "builtin": 21,
+    "builtin": 23,
     "external": 0
   },
   "by_department": {
     "product": 1,
     "architecture": 3,
-    "development": 8,
+    "development": 9,
     "qa": 2,
     "devops": 4,
-    "design": 2,
+    "design": 3,
     "docs": 1,
     "hr": 2,
     "security": 2,
@@ -428,6 +428,50 @@
         "marketing"
       ],
       "filepath": "builtin\\11-marketing\\content_marketing.skill.md"
+    },
+    {
+      "name": "flutter_stac_sdui",
+      "version": "1.0.0",
+      "display_name": "Flutter Developer (Stac SDUI)",
+      "description": "Разработка кросс-платформенных приложений на Flutter с Server-Driven UI (Stac)",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "flutter",
+        "dart",
+        "sdui",
+        "stac",
+        "mobile",
+        "cross-platform",
+        "server-driven-ui"
+      ],
+      "departments": [
+        "development"
+      ],
+      "filepath": "builtin\\02-development\\flutter\\flutter_stac_sdui.skill.md"
+    },
+    {
+      "name": "stac_sdui_designer",
+      "version": "1.0.0",
+      "display_name": "SDUI Designer (Stac)",
+      "description": "Дизайн Server-Driven UI для Flutter-приложений на Stac: компоненты, темы, JSON-схемы",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "design",
+        "sdui",
+        "stac",
+        "flutter",
+        "ui",
+        "ux",
+        "prototyping",
+        "design-system",
+        "json"
+      ],
+      "departments": [
+        "design"
+      ],
+      "filepath": "builtin\\06-design\\stac_sdui_designer.skill.md"
     },
     {
       "name": "prototyping",

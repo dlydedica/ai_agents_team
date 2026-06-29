@@ -1219,30 +1219,13 @@ def _hr_status():
 
 
 def _hr_auto_rebalance():
-    """Авто-запуск HR при изменениях в скилах."""
+    """Авто-запуск HR при импорте новых скилов."""
     try:
-        from departments.hr.agent_factory import analyze_hiring_need, rebalance_skills
-        from departments.hr.skill_balance import analyze_balance, print_report
-        
-        print(f"\n  👥 HR — Авто-анализ после изменений\n")
-        
-        # Проверка баланса
-        hire = analyze_hiring_need()
-        if hire["need_hire"]:
-            print(f"  ⚠️  Рекомендуется найм сотрудника: python team.py hr suggest")
-        else:
-            print(f"  ✅ Баланс в норме")
-        
-        # Перебаланс если нужно
-        rebalance = rebalance_skills(dry_run=True)
-        if rebalance["changes"]:
-            print(f"  🔄 Можно перебалансировать: python team.py hr rebalance")
-        
-        # Краткий отчёт
-        reports = analyze_balance()
-        print_report(reports)
-    except Exception:
-        pass
+        from departments.hr.agent_factory import overhaul as hr_overhaul
+        print(f"\n  👥 HR — Авто-пересмотр после обновления скилов\n")
+        hr_overhaul(dry_run=False)
+    except Exception as e:
+        print(f"  ⚠️ HR: {e}")
 
 
 def _skills_sync():

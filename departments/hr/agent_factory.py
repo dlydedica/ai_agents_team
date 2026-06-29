@@ -137,6 +137,21 @@ def analyze_hiring_need() -> dict:
     filtered = [c for c in candidates
                 if any(t in c.lower() for t in relevant_techs)]
 
+    # Проверка: если уже нанимали недавно — не предлагаем снова
+    cooldown_file = Path(__file__).parent / "last_hire.txt"
+    if cooldown_file.exists():
+        from datetime import datetime
+        try:
+            last_hire = cooldown_file.read_text(encoding="utf-8").strip()
+            if last_hire:
+                last_time = datetime.fromisoformat(last_hire)
+                delta = datetime.now() - last_time
+                if delta.total_seconds() < 300:  # 5 минут cooldown
+                    reasons.append("Недавно уже нанимали — подождите 5 минут")
+                    need_hire = False
+        except Exception:
+            pass
+
     return {
         "need_hire": need_hire,
         "reasons": reasons,
@@ -144,6 +159,13 @@ def analyze_hiring_need() -> dict:
         "target_department": target_dept,
         "candidates": sorted(filtered) if filtered else sorted(candidates)[:5],
     }
+
+
+def _write_hire_cooldown():
+    """Записывает время найма для cooldown."""
+    cooldown_file = Path(__file__).parent / "last_hire.txt"
+    from datetime import datetime
+    cooldown_file.write_text(datetime.now().isoformat(), encoding="utf-8")
 
 
 def suggest_new_agent() -> dict:
@@ -160,13 +182,30 @@ def suggest_new_agent() -> dict:
     # Определяем отдел для нового сотрудника (из отфильтрованных данных)
     target_dept = hire_info.get("target_department", "development")
 
-    # Определяем специализацию
+    # Определяем специализацию — ПРЕДПОЧИТАЕМ gaps (непокрытые скилы)
+    # а не дубликаты (чтобы не создавать ещё больше дубликатов)
+    from departments.hr.skill_balance import analyze_balance
+    reports = analyze_balance()
+    for report in reports:
+        if report.department == target_dept and report.gaps:
+            # Отдаём предпочтение gaps
+            gap_candidates = [g for g in report.gaps
+                              if any(t in g.lower() for t in
+                                     ["flutter", "dart", "python", "react", "backend",
+                                      "frontend", "fullstack", "stac", "sql", "database",
+                                      "testing", "docker", "devops", "data", "ml",
+                                      "security", "node", "redis"])]
+            if gap_candidates:
+                # Смешиваем: gaps + немного из candidates
+                hire_info["candidates"] = gap_candidates[:4] + hire_info["candidates"][:2]
+            break
+
     candidates = hire_info["candidates"]
     if not candidates:
         candidates = ["general"]
 
-    # Определяем навыки (берём уникальные из candidates)
-    skills = list(dict.fromkeys(candidates))[:5]  # макс 5 скилов
+    # Определяем навыки (берём уникальные, макс 5)
+    skills = list(dict.fromkeys(candidates))[:5]
 
     # Генерируем имя и роль
     spec_map = {
@@ -269,6 +308,9 @@ def create_agent(suggestion: dict) -> dict:
     agent_file = MEMBERS_DIR / f"{name}.agent.md"
     agent_file.write_text(content, encoding="utf-8")
 
+    # Записываем cooldown
+    _write_hire_cooldown()
+
     return {
         "success": True,
         "name": name,
@@ -294,6 +336,33 @@ def rebalance_skills(dry_run: bool = False) -> dict:
     changes = []
 
     for report in reports:
+        # Удаляем дубликаты у клонов (-v2, -v3)
+        for m in report.members:
+            if "-v" not in m.name:
+                continue
+            # Оставляем только 2 уникальных скила клонам
+            excess = max(0, m.skill_count - 2)
+            if excess <= 0:
+                continue
+            to_remove = m.skills[-excess:]
+            changes.append({
+                "member": m.name,
+                "department": report.department,
+                "remove": to_remove,
+                "keep_count": m.skill_count - len(to_remove),
+            })
+            if not dry_run:
+                agent_file = MEMBERS_DIR / f"{m.name}.agent.md"
+                if agent_file.exists():
+                    content = agent_file.read_text(encoding="utf-8")
+                    for s in to_remove:
+                        content = re.sub(
+                            rf'^\s*-\s*`{re.escape(s)}`.*\n?',
+                            '', content, flags=re.MULTILINE,
+                        )
+                    content = re.sub(r'\n{3,}', '\n\n', content)
+                    agent_file.write_text(content, encoding="utf-8")
+
         for m in report.overloaded:
             excess = m.skill_count - 5  # оставляем 5 скилов
             if excess <= 0:

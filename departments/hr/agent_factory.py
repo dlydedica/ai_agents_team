@@ -106,11 +106,43 @@ def analyze_hiring_need() -> dict:
 
     need_hire = bool(overloaded) or len(reasons) > 0
 
+    # Фильтруем candidates: оставляем только скилы, релевантные отделу
+    dept_tech_map = {
+        "development": ["flutter", "dart", "python", "react", "typescript",
+                        "backend", "frontend", "fullstack", "stac", "sdui",
+                        "fastapi", "sqlalchemy", "postgresql", "redis", "nodejs",
+                        "docker", "testing", "pytest", "ci", "alembic", "pydantic"],
+        "qa": ["testing", "pytest", "qa", "selenium", "automation"],
+        "devops": ["docker", "devops", "ci", "kubernetes", "terraform"],
+        "design": ["design", "ui", "ux", "figma", "sdui"],
+        "data": ["data", "sql", "ml", "etl", "analytics"],
+        "marketing": ["marketing", "content", "seo", "social"],
+        "security": ["security", "pentest", "audit"],
+        "docs": ["docs", "documentation"],
+        "hr": ["hr", "performance"],
+        "legal": ["legal", "license", "oss"],
+        "product": ["product", "management"],
+        "architecture": ["architecture", "microservices", "system"],
+        "rd": ["research", "prototyping", "rd"],
+    }
+
+    # Определяем целевой отдел (где больше всего проблем)
+    dept_counts = {}
+    for o in overloaded:
+        dept_counts[o["department"]] = dept_counts.get(o["department"], 0) + 1
+    target_dept = max(dept_counts, key=dept_counts.get) if dept_counts else "development"
+
+    # Фильтруем candidates по технологиям целевого отдела
+    relevant_techs = dept_tech_map.get(target_dept, [])
+    filtered = [c for c in candidates
+                if any(t in c.lower() for t in relevant_techs)]
+
     return {
         "need_hire": need_hire,
         "reasons": reasons,
         "overloaded": overloaded,
-        "candidates": sorted(candidates),
+        "target_department": target_dept,
+        "candidates": sorted(filtered) if filtered else sorted(candidates)[:5],
     }
 
 
@@ -125,12 +157,8 @@ def suggest_new_agent() -> dict:
     if not hire_info["need_hire"]:
         return {"error": "Новый сотрудник не требуется — баланс в норме"}
 
-    # Определяем отдел для нового сотрудника
-    dept_counts = {}
-    for o in hire_info["overloaded"]:
-        dept_counts[o["department"]] = dept_counts.get(o["department"], 0) + 1
-
-    target_dept = max(dept_counts, key=dept_counts.get) if dept_counts else "development"
+    # Определяем отдел для нового сотрудника (из отфильтрованных данных)
+    target_dept = hire_info.get("target_department", "development")
 
     # Определяем специализацию
     candidates = hire_info["candidates"]
@@ -141,25 +169,29 @@ def suggest_new_agent() -> dict:
     skills = list(dict.fromkeys(candidates))[:5]  # макс 5 скилов
 
     # Генерируем имя и роль
-    skill_tags = []
-    for s in skills:
-        if "flutter" in s or "dart" in s:
-            skill_tags.append("Flutter")
-        elif "react" in s or "frontend" in s or "typescript" in s:
-            skill_tags.append("Frontend")
-        elif "backend" in s or "python" in s or "fastapi" in s:
-            skill_tags.append("Backend")
-        elif "sql" in s or "database" in s or "postgres" in s:
-            skill_tags.append("Database")
-        elif "testing" in s or "qa" in s or "pytest" in s:
-            skill_tags.append("QA")
-        elif "docker" in s or "devops" in s or "ci" in s:
-            skill_tags.append("DevOps")
-        elif "data" in s or "ml" in s:
-            skill_tags.append("Data")
+    spec_map = {
+        "flutter": "Flutter", "dart": "Flutter",
+        "react": "Frontend", "frontend": "Frontend", "typescript": "Frontend", "ui": "Frontend",
+        "backend": "Backend", "python": "Backend", "fastapi": "Backend",
+        "fullstack": "Fullstack",
+        "sql": "DB", "database": "DB", "postgres": "DB", "mysql": "DB",
+        "testing": "QA", "qa": "QA", "pytest": "QA",
+        "docker": "DevOps", "devops": "DevOps", "kubernetes": "DevOps",
+        "data": "Data", "ml": "Data", "etl": "Data",
+        "security": "Security", "pentest": "Security",
+        "marketing": "Marketing", "content": "Marketing",
+        "stac": "Stac", "sdui": "Stac",
+        "nodejs": "NodeJS", "redis": "Redis",
+    }
 
-    spec = " ".join(dict.fromkeys(skill_tags))[:3] if skill_tags else "General"
-    name = f"{target_dept}-{spec.lower().replace(' ', '-')}-specialist"
+    seen = []
+    for s in skills:
+        for key, label in spec_map.items():
+            if key in s.lower() and label not in seen:
+                seen.append(label)
+                break
+    spec = " + ".join(seen[:3]) if seen else "General"
+    name = f"{target_dept}-{spec.lower().replace(' + ', '-')[:25]}-specialist"
 
     emojis = {"development": "💻", "qa": "🧪", "design": "🎨", "devops": "⚙️",
               "data": "📊", "security": "🛡️", "docs": "📖", "hr": "👥",

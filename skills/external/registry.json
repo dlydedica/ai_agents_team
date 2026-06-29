@@ -64,16 +64,6 @@
       "departments": ["development", "qa"],
       "technologies": ["testing"],
       "installed": false
-    },
-    {
-      "name": "awesome-copilot",
-      "repo": "jefftern/awesome-copilot",
-      "url": "https://github.com/jefftern/awesome-copilot.git",
-      "branch": "main",
-      "description": "Большая коллекция скилов Copilot: Python, QA, CI/CD и др.",
-      "departments": ["development", "devops", "data"],
-      "technologies": ["python", "testing"],
-      "installed": false
     }
   ],
   "skills": []

@@ -186,10 +186,16 @@ def install_from_symlink(source_path: str, name: str = "") -> dict:
 
 
 def _scan_external_skills(directory: Path) -> list[str]:
-    """Сканирует директорию на наличие .skill.md файлов."""
+    """Сканирует директорию на наличие .skill.md / SKILL.md файлов."""
     skills = []
-    for f in sorted(directory.rglob("*.skill.md")):
-        skills.append(f.stem.replace(".skill", ""))
+    seen = set()
+    for pattern in ("*.skill.md", "SKILL.md"):
+        for f in sorted(directory.rglob(pattern)):
+            parent = f.parent
+            if parent not in seen:
+                seen.add(parent)
+                # Берём имя родительской папки как имя скила
+                skills.append(parent.name)
     return skills
 
 

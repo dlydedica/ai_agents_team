@@ -1054,7 +1054,6 @@ def _hr_hire():
         rb = rebalance_skills(dry_run=False)
         if rb["changes"]:
             print(f"  🔄 Перебалансировано: {rb['total_rebalanced']} сотрудников")
-        _hr_auto_rebalance()
 
 
 def _hr_fire_interactive():
@@ -1218,14 +1217,7 @@ def _hr_status():
             print(f"       {m['note']}")
 
 
-def _hr_auto_rebalance():
-    """Авто-запуск HR при импорте новых скилов."""
-    try:
-        from departments.hr.agent_factory import overhaul as hr_overhaul
-        print(f"\n  👥 HR — Авто-пересмотр после обновления скилов\n")
-        hr_overhaul(dry_run=False)
-    except Exception as e:
-        print(f"  ⚠️ HR: {e}")
+
 
 
 def _skills_sync():
@@ -1259,9 +1251,7 @@ def _skills_sync():
             print(f"     ❌ {e}")
         print()
     print("  💡 Проверить: python team.py skills suggest\n")
-
-    # Авто-запуск HR после синхронизации
-    _hr_auto_rebalance()
+    print("  💡 Баланс команды: python team.py hr overhaul\n")
 
 
 def _skills_report():
@@ -1412,7 +1402,6 @@ def main():
                     print(f"  🔄 Перебалансировано: {rb['total_rebalanced']} сотрудников")
                     for c in rb["changes"]:
                         print(f"     • {c['member']}: убрано {len(c['remove'])} скилов")
-                _hr_auto_rebalance()
         elif subcmd == "overhaul":
             from departments.hr.agent_factory import overhaul as hr_overhaul
             dry = "--dry-run" in sys.argv

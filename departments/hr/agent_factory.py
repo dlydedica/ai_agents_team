@@ -400,6 +400,91 @@ def rebalance_skills(dry_run: bool = False) -> dict:
     }
 
 
+def overhaul(dry_run: bool = False) -> dict:
+    """Полный пересмотр команды: баланс → найм → увольнение → отчёт.
+
+    Автоматически:
+    1. Перебалансирует скилы (rebalance)
+    2. Увольняет клонов (-v2, -v3...)
+    3. Нанимает нового сотрудника если gaps > 5
+    4. Даёт отчёт о здоровье команды
+
+    Args:
+        dry_run: если True — только показать, не применять
+
+    Returns:
+        dict с результатом
+    """
+    from departments.hr.lifecycle import archive_member, demote_member, set_rating
+    from departments.hr.skill_balance import analyze_balance
+
+    log = []
+    changes = {"hired": 0, "fired": 0, "rebalanced": 0}
+
+    print(f"\n{'='*60}")
+    print(f"  👥 HR — Полный пересмотр команды {'(DRY RUN)' if dry_run else ''}")
+    print(f"{'='*60}\n")
+
+    # Шаг 1: Анализ текущего состояния
+    reports = analyze_balance()
+    total = sum(len(r.members) for r in reports)
+    print(f"  📊 Текущий состав: {total} сотрудников\n")
+
+    for report in reports:
+        emoji = {"development": "💻", "qa": "🧪"}.get(report.department, "📁")
+        status = "✅" if report.score >= 50 else "❌"
+        print(f"  {emoji} {report.department.capitalize():15s} {status} Оценка: {report.score}/100")
+
+        # Шаг 2: Увольняем клонов (-v2, -v3...)
+        clones = [m for m in report.members if "-v" in m.name]
+        clones_to_fire = clones[1:]  # оставляем одного, остальных увольняем
+        if clones_to_fire:
+            for clone in clones_to_fire:
+                print(f"     🗄️  Увольнение клона: {clone.name}")
+                if not dry_run:
+                    archive_member(clone.name, "Клон, заменён основным")
+                    changes["fired"] += 1
+
+        # Шаг 3: Перебалансировка
+        rb_result = rebalance_skills(dry_run=dry_run)
+        changes["rebalanced"] += rb_result["total_rebalanced"]
+
+        # Шаг 4: Найм если gaps > 5
+        if len(report.gaps) >= 5:
+            from departments.hr.agent_factory import analyze_hiring_need, suggest_new_agent, create_agent
+            hire_info = analyze_hiring_need()
+            if hire_info["need_hire"]:
+                suggestion = suggest_new_agent()
+                if "error" not in suggestion and not dry_run:
+                    result = create_agent(suggestion)
+                    if "success" in result:
+                        print(f"     👤 Найм: {result['name']} ({', '.join(result['skills'][:3])}...)")
+                        changes["hired"] += 1
+                    else:
+                        print(f"     ⚠️  Найм не удался: {result.get('error', '')}")
+                elif dry_run:
+                    print(f"     💡 Будет нанят: {suggestion.get('role', '?')} "
+                          f"со скилами: {', '.join(suggestion.get('skills', [])[:3])}...")
+                    changes["hired"] = 1
+        print()
+
+    # Итог
+    print(f"  {'='*50}")
+    if dry_run:
+        print(f"  🔍 DRY RUN — изменения не применены")
+    print(f"  📋 Результаты:")
+    print(f"     👤 Нанято: {changes['hired']}")
+    print(f"     🗄️  Уволено: {changes['fired']}")
+    print(f"     🔄 Перебалансировано: {changes['rebalanced']}")
+
+    if not dry_run and (changes["hired"] or changes["fired"] or changes["rebalanced"]):
+        print(f"\n  ✅ Команда пересмотрена. Запустите python team.py hr balance для проверки.")
+
+    print()
+
+    return changes
+
+
 # CLI
 def _cli():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "suggest"

@@ -963,6 +963,7 @@ def _hr_interactive():
         ("⭐ Оценить сотрудника", "_hr_rate"),
         ("📉 Понизить сотрудника", "_hr_demote"),
         ("🔄 Перебалансировать скилы", "_hr_rebalance"),
+        ("🏥 Полный пересмотр команды", "_hr_overhaul"),
         ("📋 Статус сотрудников", "_hr_status"),
         ("❌ Выход", "_exit"),
     ]
@@ -1009,6 +1010,8 @@ def _hr_interactive():
             _hr_demote_interactive()
         elif action == "_hr_rebalance":
             _hr_rebalance()
+        elif action == "_hr_overhaul":
+            _hr_overhaul()
         elif action == "_hr_status":
             _hr_status()
 
@@ -1193,6 +1196,12 @@ def _hr_rebalance():
         print(f"\n  🔄 Перебалансировано {result['total_rebalanced']} сотрудников")
         for c in result["changes"]:
             print(f"     • {c['member']}: убрано {len(c['remove'])} скилов")
+
+
+def _hr_overhaul():
+    """Полный пересмотр команды."""
+    from departments.hr.agent_factory import overhaul as hr_overhaul
+    hr_overhaul(dry_run=False)
 
 
 def _hr_status():
@@ -1421,6 +1430,10 @@ def main():
                     for c in rb["changes"]:
                         print(f"     • {c['member']}: убрано {len(c['remove'])} скилов")
                 _hr_auto_rebalance()
+        elif subcmd == "overhaul":
+            from departments.hr.agent_factory import overhaul as hr_overhaul
+            dry = "--dry-run" in sys.argv
+            hr_overhaul(dry_run=dry)
         elif subcmd == "rebalance":
             from departments.hr.agent_factory import rebalance_skills
             dry = "--dry-run" in sys.argv

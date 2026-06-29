@@ -64,6 +64,16 @@
       "departments": ["development", "qa"],
       "technologies": ["testing"],
       "installed": false
+    },
+    {
+      "name": "ofis-ai-marketplace",
+      "repo": "ofis-ai.ru/skills",
+      "url": "https://ofis-ai.ru/skills",
+      "branch": null,
+      "description": "Маркетплейс 1306+ скилов для Claude Code на русском. По профессиям и категориям.",
+      "departments": ["development", "design", "qa", "devops", "data", "marketing", "product", "docs", "hr", "legal", "rd", "security"],
+      "technologies": ["general"],
+      "installed": false
     }
   ],
   "skills": []

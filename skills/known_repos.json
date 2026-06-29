@@ -1,0 +1,27 @@
+{
+  "$schema": "v1",
+  "description": "База известных репозиториев со скилами для AI DevCorp",
+  "repos": {
+    "dart": {
+      "repo": "dart-lang/skills",
+      "url": "https://github.com/dart-lang/skills.git",
+      "description": "Официальные скилы Dart от команды Dart",
+      "departments": ["development"],
+      "technologies": ["dart"]
+    },
+    "flutter": {
+      "repo": "flutter/skills",
+      "url": "https://github.com/flutter/skills.git",
+      "description": "Официальные скилы Flutter от команды Flutter",
+      "departments": ["development", "design"],
+      "technologies": ["flutter", "dart"]
+    },
+    "python-backend": {
+      "repo": "ai-community/python-backend-skills",
+      "url": null,
+      "description": "Скилы Python-разработчика (бэкенд)",
+      "departments": ["development"],
+      "technologies": ["python", "fastapi", "django"]
+    }
+  }
+}

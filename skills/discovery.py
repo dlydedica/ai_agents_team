@@ -20,34 +20,22 @@ from dataclasses import dataclass, field
 SKILLS_DIR = Path(__file__).parent
 EXTERNAL_DIR = SKILLS_DIR / "external"
 REGISTRY_FILE = EXTERNAL_DIR / "registry.json"
+KNOWN_REPOS_FILE = SKILLS_DIR / "known_repos.json"
 
-# База известных репозиториев со скилами
-# Можно расширять, добавляя новые источники
-KNOWN_SKILL_REPOS = {
-    # Официальные репозитории команд Dart/Flutter
-    "dart": {
-        "repo": "dart-lang/skills",
-        "url": "https://github.com/dart-lang/skills.git",
-        "description": "Официальные скилы Dart от команды Dart",
-        "departments": ["development"],
-        "technologies": ["dart"],
-    },
-    "flutter": {
-        "repo": "flutter/skills",
-        "url": "https://github.com/flutter/skills.git",
-        "description": "Официальные скилы Flutter от команды Flutter",
-        "departments": ["development", "design"],
-        "technologies": ["flutter", "dart"],
-    },
-    # Расширяемая база сообщества
-    "python-backend": {
-        "repo": "ai-community/python-backend-skills",
-        "url": None,
-        "description": "Скилы Python-разработчика (бэкенд)",
-        "departments": ["development"],
-        "technologies": ["python", "fastapi", "django"],
-    },
-}
+
+def _load_known_repos() -> dict:
+    """Загружает базу известных репозиториев из JSON-файла."""
+    try:
+        if KNOWN_REPOS_FILE.exists():
+            data = json.loads(KNOWN_REPOS_FILE.read_text(encoding="utf-8"))
+            return data.get("repos", {})
+    except (json.JSONDecodeError, OSError):
+        pass
+    return {}
+
+
+# База известных репозиториев со скилами (загружается из known_repos.json)
+KNOWN_SKILL_REPOS = _load_known_repos()
 
 # Маппинг технологий на отделы
 TECH_TO_DEPARTMENT = {
@@ -306,8 +294,6 @@ def get_all_installed_skills() -> list[dict]:
 
 def get_skills_for_department(department: str) -> list[dict]:
     """Возвращает скилы, подходящие для указанного отдела."""
-    from registry import search_skills
-
     from skills.registry import search_skills
     return search_skills(department=department, skill_type="all")
 

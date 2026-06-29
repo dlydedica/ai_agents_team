@@ -1161,12 +1161,98 @@ def main():
                     print(f"  🔄 {c['member']}: убрано {len(c['remove'])} скилов")
                 if dry:
                     print(f"\n  🔍 Dry-run. Применить: python team.py hr rebalance\n")
+        elif subcmd == "status":
+            from departments.hr.lifecycle import get_status_report
+            members = get_status_report()
+            print(f"\n👥 HR — Статус сотрудников\n")
+            for m in members:
+                s = m["status"]
+                emoji = {"active": "✅", "paused": "⏸️", "archived": "🗄️"}.get(s, "❓")
+                stars = "⭐" * (m.get("rating", 50) // 20)
+                print(f"  {emoji} {m['name']:30s} | {s:10s} | {stars} {m.get('rating', 0):3d}")
+                if m.get("note"):
+                    print(f"       {m['note']}")
+            print()
+        elif subcmd == "fire":
+            if len(sys.argv) < 4:
+                print("❌ Укажите сотрудника: python team.py hr fire <name> [причина]")
+            else:
+                from departments.hr.lifecycle import archive_member
+                name = sys.argv[3]
+                reason = " ".join(sys.argv[4:]) if len(sys.argv) > 4 else ""
+                result = archive_member(name, reason)
+                if "error" in result:
+                    print(f"❌ {result['error']}")
+                else:
+                    print(f"\n👥 HR — Увольнение: {result['name']} 🗄️")
+                    if result["skills_freed"]:
+                        print(f"  🔄 Освобождены: {', '.join(result['skills_freed'])}")
+        elif subcmd == "pause":
+            if len(sys.argv) < 4:
+                print("❌ Укажите сотрудника: python team.py hr pause <name> [причина]")
+            else:
+                from departments.hr.lifecycle import set_status as hr_set_status
+                name = sys.argv[3]
+                reason = " ".join(sys.argv[4:]) if len(sys.argv) > 4 else "Отправлен в отпуск"
+                result = hr_set_status(name, "paused", reason)
+                if "error" in result:
+                    print(f"❌ {result['error']}")
+                else:
+                    print(f"\n👥 HR — Пауза: {result['name']} ⏸️")
+                    print(f"  💡 python team.py hr resume {name}")
+        elif subcmd == "resume":
+            if len(sys.argv) < 4:
+                print("❌ Укажите сотрудника: python team.py hr resume <name>")
+            else:
+                from departments.hr.lifecycle import set_status as hr_set_status
+                name = sys.argv[3]
+                result = hr_set_status(name, "active", "Возвращён в команду")
+                if "error" in result:
+                    print(f"❌ {result['error']}")
+                else:
+                    print(f"\n👥 HR — Восстановлен: {result['name']} ✅")
+        elif subcmd == "rate":
+            if len(sys.argv) < 5:
+                print("❌ Использование: python team.py hr rate <name> <0-100>")
+            else:
+                from departments.hr.lifecycle import set_rating
+                name = sys.argv[3]
+                try:
+                    rating = int(sys.argv[4])
+                    result = set_rating(name, rating)
+                    if "error" in result:
+                        print(f"❌ {result['error']}")
+                    else:
+                        print(f"\n👥 HR — Оценка: {result['name']} ⭐ {result['rating']}/100")
+                except ValueError:
+                    print("❌ Рейтинг должен быть числом 0-100")
+        elif subcmd == "demote":
+            if len(sys.argv) < 4:
+                print("❌ Укажите сотрудника: python team.py hr demote <name> [скил...]")
+            else:
+                from departments.hr.lifecycle import demote_member
+                name = sys.argv[3]
+                skills = sys.argv[4:] if len(sys.argv) > 4 else None
+                result = demote_member(name, skills)
+                if "error" in result:
+                    print(f"❌ {result['error']}")
+                else:
+                    print(f"\n👥 HR — Понижение: {result['name']} 📉")
+                    if result["removed_skills"]:
+                        print(f"  🔄 Отобраны: {', '.join(result['removed_skills'])}")
         else:
             print(f"❌ Неизвестная подкоманда hr: {subcmd}")
-            print("   Пример: python team.py hr balance")
-            print("   Пример: python team.py hr suggest")
-            print("   Пример: python team.py hr hire")
-            print("   Пример: python team.py hr rebalance")
+            print("   Команды:")
+            print("     balance  — анализ баланса скилов")
+            print("     suggest  — предложить нового сотрудника")
+            print("     hire     — создать нового сотрудника")
+            print("     fire     — уволить сотрудника")
+            print("     pause    — приостановить сотрудника")
+            print("     resume   — восстановить сотрудника")
+            print("     rate     — оценить сотрудника (0-100)")
+            print("     demote   — отобрать скилы")
+            print("     rebalance— перебалансировать скилы")
+            print("     status   — статусы всех сотрудников")
     elif command == "members":
         dept_name = sys.argv[2] if len(sys.argv) > 2 else ""
         _list_members(dept_name)

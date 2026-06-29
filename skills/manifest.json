@@ -1,15 +1,15 @@
 {
   "$schema": "v1",
   "generated_at": "2026-06-29T12:00:00.000000",
-  "total": 23,
+  "total": 24,
   "by_type": {
-    "builtin": 23,
+    "builtin": 24,
     "external": 0
   },
   "by_department": {
     "product": 1,
     "architecture": 3,
-    "development": 9,
+    "development": 10,
     "qa": 2,
     "devops": 4,
     "design": 3,
@@ -449,6 +449,28 @@
         "development"
       ],
       "filepath": "builtin\\02-development\\flutter\\flutter_stac_sdui.skill.md"
+    },
+    {
+      "name": "dart_flutter_developer",
+      "version": "1.0.0",
+      "display_name": "Dart/Flutter Developer",
+      "description": "Разработка кросс-платформенных мобильных и веб-приложений на Flutter и Dart",
+      "type": "builtin",
+      "grade": "M",
+      "tags": [
+        "dart",
+        "flutter",
+        "mobile",
+        "cross-platform",
+        "ios",
+        "android",
+        "web",
+        "desktop"
+      ],
+      "departments": [
+        "development"
+      ],
+      "filepath": "builtin\\02-development\\flutter\\dart_flutter_developer.skill.md"
     },
     {
       "name": "stac_sdui_designer",

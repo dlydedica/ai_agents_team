@@ -1,20 +1,79 @@
 {
   "$schema": "v1",
-  "description": "Реестр внешних источников скилов AI DevCorp",
+  "description": "Единый реестр внешних источников скилов AI DevCorp. installed=true — уже загружены, installed=false — известны, но не установлены.",
   "sources": [
     {
-      "name": "dart-lang-skills",
-      "type": "git",
+      "name": "dart",
+      "repo": "dart-lang/skills",
       "url": "https://github.com/dart-lang/skills.git",
       "branch": "main",
+      "description": "Официальные скилы Dart от команды Dart",
+      "departments": ["development"],
+      "technologies": ["dart"],
+      "installed": true,
       "path": "external\\dart-lang-skills"
     },
     {
-      "name": "flutter-skills",
-      "type": "git",
+      "name": "flutter",
+      "repo": "flutter/skills",
       "url": "https://github.com/flutter/skills.git",
       "branch": "main",
+      "description": "Официальные скилы Flutter от команды Flutter",
+      "departments": ["development", "design"],
+      "technologies": ["flutter", "dart"],
+      "installed": true,
       "path": "external\\flutter-skills"
+    },
+    {
+      "name": "stac",
+      "repo": "StacDev/stac",
+      "url": "https://github.com/StacDev/stac.git",
+      "branch": "dev",
+      "description": "Официальные скилы Stac SDUI: quickstart, screen-builder, custom-extensions, troubleshooter",
+      "departments": ["development", "design"],
+      "technologies": ["flutter", "dart", "stac", "sdui"],
+      "installed": true,
+      "path": "external\\stac"
+    },
+    {
+      "name": "dash-skills",
+      "repo": "kevmoo/dash_skills",
+      "url": "https://github.com/kevmoo/dash_skills.git",
+      "branch": "main",
+      "description": "Личные скилы Dart/Flutter от kevmoo",
+      "departments": ["development"],
+      "technologies": ["dart", "flutter", "testing"],
+      "installed": false
+    },
+    {
+      "name": "general-productivity",
+      "repo": "mattpocock/skills",
+      "url": "https://github.com/mattpocock/skills.git",
+      "branch": "main",
+      "description": "Скилы продуктивности: инженерия, TypeScript, общие практики",
+      "departments": ["development"],
+      "technologies": ["typescript", "javascript"],
+      "installed": false
+    },
+    {
+      "name": "superpowers",
+      "repo": "obra/superpowers",
+      "url": "https://github.com/obra/superpowers.git",
+      "branch": "main",
+      "description": "Superpowers: TDD, отладка, планирование — общие скилы",
+      "departments": ["development", "qa"],
+      "technologies": ["testing"],
+      "installed": false
+    },
+    {
+      "name": "awesome-copilot",
+      "repo": "jefftern/awesome-copilot",
+      "url": "https://github.com/jefftern/awesome-copilot.git",
+      "branch": "main",
+      "description": "Большая коллекция скилов Copilot: Python, QA, CI/CD и др.",
+      "departments": ["development", "devops", "data"],
+      "technologies": ["python", "testing"],
+      "installed": false
     }
   ],
   "skills": []

@@ -20,22 +20,28 @@ from dataclasses import dataclass, field
 SKILLS_DIR = Path(__file__).parent
 EXTERNAL_DIR = SKILLS_DIR / "external"
 REGISTRY_FILE = EXTERNAL_DIR / "registry.json"
-KNOWN_REPOS_FILE = SKILLS_DIR / "known_repos.json"
 
 
-def _load_known_repos() -> dict:
-    """Загружает базу известных репозиториев из JSON-файла."""
+def _load_all_sources() -> list[dict]:
+    """Загружает все источники из registry.json (установленные + известные)."""
     try:
-        if KNOWN_REPOS_FILE.exists():
-            data = json.loads(KNOWN_REPOS_FILE.read_text(encoding="utf-8"))
-            return data.get("repos", {})
+        if REGISTRY_FILE.exists():
+            data = json.loads(REGISTRY_FILE.read_text(encoding="utf-8"))
+            return data.get("sources", [])
     except (json.JSONDecodeError, OSError):
         pass
-    return {}
+    return []
 
 
-# База известных репозиториев со скилами (загружается из known_repos.json)
-KNOWN_SKILL_REPOS = _load_known_repos()
+# Единый список всех известных репозиториев со скилами (из registry.json)
+ALL_SOURCES = _load_all_sources()
+KNOWN_SKILL_REPOS = {s["name"]: {
+    "repo": s["repo"],
+    "url": s["url"],
+    "description": s.get("description", ""),
+    "departments": s.get("departments", ["development"]),
+    "technologies": s.get("technologies", []),
+} for s in ALL_SOURCES}
 
 # Маппинг технологий на отделы
 TECH_TO_DEPARTMENT = {
@@ -208,7 +214,8 @@ def suggest_skills(technologies: list[str] = None) -> list[SkillSuggestion]:
     Returns:
         Список предложений SkillSuggestion
     """
-    installed = _get_installed_sources()
+    # is_installed берём напрямую из ALL_SOURCES (registry.json)
+    source_map = {s["name"]: s.get("installed", False) for s in ALL_SOURCES}
     suggestions = []
 
     # Проверяем известные репозитории
@@ -218,13 +225,7 @@ def suggest_skills(technologies: list[str] = None) -> list[SkillSuggestion]:
             if not tech_match:
                 continue
 
-        is_installed = any(
-            s["name"] == key
-            or s["name"] in info["repo"]
-            or key in s["name"]
-            or info["repo"].split("/")[-1] in s["name"]
-            for s in installed
-        )
+        is_installed = source_map.get(key, False)
 
         suggestions.append(SkillSuggestion(
             name=key,
@@ -271,14 +272,13 @@ def _technologies_to_departments(technologies: list[str]) -> list[str]:
 
 
 def _get_installed_sources() -> list[dict]:
-    """Возвращает список установленных источников."""
-    try:
-        if REGISTRY_FILE.exists():
-            data = json.loads(REGISTRY_FILE.read_text(encoding="utf-8"))
-            return data.get("sources", [])
-    except (json.JSONDecodeError, OSError):
-        pass
-    return []
+    """Возвращает только установленные источники (installed=true)."""
+    return [s for s in ALL_SOURCES if s.get("installed") is True]
+
+
+def _get_known_sources() -> list[dict]:
+    """Возвращает все известные источники (включая неустановленные)."""
+    return ALL_SOURCES
 
 
 def get_all_installed_skills() -> list[dict]:

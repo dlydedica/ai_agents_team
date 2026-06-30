@@ -86,15 +86,30 @@ def _parse_agent_skills(filepath: Path) -> tuple[str, str, list[str]]:
 
 
 def _get_department_for_member(member_name: str) -> str:
-    """Определяет отдел сотрудника по описанию в agent-файле."""
-    # Убираем дублирование .agent если уже есть
+    """Определяет отдел сотрудника по agent-файлу (department: в frontmatter)."""
     clean_name = member_name.replace(".agent", "")
     agent_file = MEMBERS_DIR / f"{clean_name}.agent.md"
     if not agent_file.exists():
         return "unknown"
     try:
         content = agent_file.read_text(encoding="utf-8")
-        # Ищем в description: "Frontend Developer — Flutter/Dart, React..."
+        in_frontmatter = False
+        for line in content.split("\n"):
+            stripped = line.strip()
+            # Отслеживаем YAML frontmatter
+            if stripped == "---":
+                in_frontmatter = not in_frontmatter
+                continue
+            if not in_frontmatter:
+                continue
+
+            # Поле department: в frontmatter
+            if stripped.startswith("department:"):
+                dept = stripped.split(":", 1)[1].strip().strip('"').strip("'")
+                if dept:
+                    return dept.lower()
+
+        # Fallback: ищем в description (для старых файлов без department:)
         for line in content.split("\n"):
             if line.strip().startswith("description:"):
                 desc = line.strip()
@@ -103,7 +118,6 @@ def _get_department_for_member(member_name: str) -> str:
                               "product", "architecture", "rd"]:
                     if dept in desc.lower():
                         return dept
-                # Если не нашли по названию отдела — ищем по ключевым словам
                 dev_keywords = ["flutter", "dart", "react", "python", "backend",
                                 "frontend", "fullstack", "stac", "typescript",
                                 "developer", "full-stack", "web"]

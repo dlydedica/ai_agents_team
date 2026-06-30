@@ -10,5 +10,245 @@
     "rating": 50,
     "note": "Возвращён в команду",
     "updated": "2026-06-29"
+  },
+  "alex": {
+    "status": "active",
+    "rating": 50,
+    "note": "Product Manager — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "jordan": {
+    "status": "active",
+    "rating": 50,
+    "note": "Business Analyst — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "sam": {
+    "status": "active",
+    "rating": 50,
+    "note": "System Architect — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "taylor": {
+    "status": "active",
+    "rating": 50,
+    "note": "Solution Architect — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "morgan": {
+    "status": "active",
+    "rating": 50,
+    "note": "Tech Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "riley": {
+    "status": "active",
+    "rating": 50,
+    "note": "Frontend Developer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "casey": {
+    "status": "active",
+    "rating": 50,
+    "note": "Backend Developer — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "avery": {
+    "status": "active",
+    "rating": 50,
+    "note": "Fullstack Developer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "quinn": {
+    "status": "active",
+    "rating": 50,
+    "note": "Frontend Developer — Junior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "drew": {
+    "status": "active",
+    "rating": 50,
+    "note": "Backend Developer — Junior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "jamie": {
+    "status": "active",
+    "rating": 50,
+    "note": "QA Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "sydney": {
+    "status": "active",
+    "rating": 50,
+    "note": "Manual Tester — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "parker": {
+    "status": "active",
+    "rating": 50,
+    "note": "Automation Tester — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "dakota": {
+    "status": "active",
+    "rating": 50,
+    "note": "DevOps Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "reese": {
+    "status": "active",
+    "rating": 50,
+    "note": "SRE — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "blake": {
+    "status": "active",
+    "rating": 50,
+    "note": "Design Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "ariel": {
+    "status": "active",
+    "rating": 50,
+    "note": "UI/UX Designer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "harper": {
+    "status": "active",
+    "rating": 50,
+    "note": "Technical Writer — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "skyler": {
+    "status": "active",
+    "rating": 50,
+    "note": "HR Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "emerson": {
+    "status": "active",
+    "rating": 50,
+    "note": "HR Analyst — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "rowan": {
+    "status": "active",
+    "rating": 50,
+    "note": "L&D Specialist — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "finley": {
+    "status": "active",
+    "rating": 50,
+    "note": "Talent Scout — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "phoenix": {
+    "status": "active",
+    "rating": 50,
+    "note": "Security Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "sage": {
+    "status": "active",
+    "rating": 50,
+    "note": "Security Engineer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "oakley": {
+    "status": "active",
+    "rating": 50,
+    "note": "Compliance Officer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "river": {
+    "status": "active",
+    "rating": 50,
+    "note": "Data Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "wren": {
+    "status": "active",
+    "rating": 50,
+    "note": "Data Engineer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "aspen": {
+    "status": "active",
+    "rating": 50,
+    "note": "Data Scientist — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "lake": {
+    "status": "active",
+    "rating": 50,
+    "note": "BI Analyst — Junior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "nova": {
+    "status": "active",
+    "rating": 50,
+    "note": "R&D Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "echo": {
+    "status": "active",
+    "rating": 50,
+    "note": "Research Engineer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "pixel": {
+    "status": "active",
+    "rating": 50,
+    "note": "Innovation Analyst — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "justice": {
+    "status": "active",
+    "rating": 50,
+    "note": "Legal Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "clause": {
+    "status": "active",
+    "rating": 50,
+    "note": "IP & License Specialist — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "docket": {
+    "status": "active",
+    "rating": 50,
+    "note": "Contracts Manager — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "vesper": {
+    "status": "active",
+    "rating": 50,
+    "note": "Marketing Lead — Senior, onboarded",
+    "updated": "2026-06-30"
+  },
+  "story": {
+    "status": "active",
+    "rating": 50,
+    "note": "Content Marketing Manager — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "pulse": {
+    "status": "active",
+    "rating": 50,
+    "note": "Growth Marketing Manager — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "hue": {
+    "status": "active",
+    "rating": 50,
+    "note": "Brand Designer — Middle, onboarded",
+    "updated": "2026-06-30"
+  },
+  "metric": {
+    "status": "active",
+    "rating": 50,
+    "note": "Marketing Analyst — Junior, onboarded",
+    "updated": "2026-06-30"
   }
 }

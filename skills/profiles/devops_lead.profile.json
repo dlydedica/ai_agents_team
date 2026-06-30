@@ -1,0 +1,20 @@
+{
+  "name": "devops_lead",
+  "version": "1.0.0",
+  "display_name": "DevOps Lead",
+  "description": "Глава DevOps: инфраструктура, облака",
+  "skills": [
+    "infra_design",
+    "cloud_strategy",
+    "ci_cd"
+  ],
+  "departments": [
+    "devops"
+  ],
+  "grade": "S",
+  "tags": [
+    "devops",
+    "leadership"
+  ],
+  "icon": "👔"
+}

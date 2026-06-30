@@ -1,0 +1,11 @@
+# AI DevCorp — Корневой файл зависимостей
+# Установка: pip install -r requirements.txt
+
+# === MCP-сервер координации ===
+mcp>=1.0.0
+portalocker>=2.0.0
+
+# === Дашборд (FastAPI + Jinja2) ===
+fastapi>=0.100.0
+uvicorn>=0.20.0
+jinja2>=3.0.0

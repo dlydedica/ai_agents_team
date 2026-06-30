@@ -1,5 +1,8 @@
 ---
+alias: "Flutter Specialist"
 description: "Flutter Specialist — Flutter, Dart, Stac SDUI, мобильная разработка"
+grade: "M"
+department: development
 tools: [read, search, edit, execute]
 user-invocable: false
 ---

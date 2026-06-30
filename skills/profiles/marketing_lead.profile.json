@@ -1,0 +1,20 @@
+{
+  "name": "marketing_lead",
+  "version": "1.0.0",
+  "display_name": "Marketing Lead",
+  "description": "Глава маркетинга: стратегия, брендинг, GTM",
+  "skills": [
+    "marketing_strategy",
+    "branding",
+    "gtm"
+  ],
+  "departments": [
+    "marketing"
+  ],
+  "grade": "S",
+  "tags": [
+    "marketing",
+    "leadership"
+  ],
+  "icon": "👔"
+}

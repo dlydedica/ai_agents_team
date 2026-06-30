@@ -1,0 +1,21 @@
+{
+  "name": "bi_analyst",
+  "version": "1.0.0",
+  "display_name": "BI Analyst",
+  "description": "Бизнес-аналитика: дашборды, отчёты",
+  "skills": [
+    "tableau",
+    "superset",
+    "sql",
+    "data_viz"
+  ],
+  "departments": [
+    "data"
+  ],
+  "grade": "J",
+  "tags": [
+    "data",
+    "analytics"
+  ],
+  "icon": "📈"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "solution_architect",
+  "version": "1.0.0",
+  "display_name": "Solution Architect",
+  "description": "Проектирование решений: API, компоненты",
+  "skills": [
+    "api_design",
+    "component_design",
+    "adr"
+  ],
+  "departments": [
+    "architecture"
+  ],
+  "grade": "M",
+  "tags": [
+    "architecture",
+    "solutions"
+  ],
+  "icon": "🔧"
+}

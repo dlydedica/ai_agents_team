@@ -33,6 +33,40 @@ STATUS_ARCHIVED = "archived"
 
 HR_EMOJI = "👥"
 
+
+def _extract_skills_from_file(filepath: Path) -> list[str]:
+    """Извлекает список скилов из .agent.md файла."""
+    skills = []
+    try:
+        content = filepath.read_text(encoding="utf-8")
+        in_skills = False
+        for line in content.split("\n"):
+            if line.strip().startswith("## Скилы"):
+                in_skills = True
+                continue
+            if in_skills and line.strip().startswith("## "):
+                break
+            if in_skills:
+                m = re.match(r'^\s*-\s*`(.+?)`', line.strip())
+                if m:
+                    skills.append(m.group(1))
+    except Exception:
+        pass
+    return skills
+
+
+def _validate_agent(name: str) -> tuple[bool, dict]:
+    """Проверяет существование сотрудника и загружает статусы.
+
+    Returns:
+        (exists, statuses) — если not exists, статусы пусты
+    """
+    agent_file = MEMBERS_DIR / f"{name}.agent.md"
+    if not agent_file.exists():
+        return False, {}
+    return True, _load_statuses()
+
+
 # Данные о статусах
 def _load_statuses() -> dict:
     """Загружает статусы всех сотрудников."""
@@ -95,12 +129,10 @@ def set_status(name: str, status: str, note: str = "") -> dict:
     Returns:
         dict с результатом
     """
-    # Проверяем, что сотрудник существует
-    agent_file = MEMBERS_DIR / f"{name}.agent.md"
-    if not agent_file.exists():
+    exists, statuses = _validate_agent(name)
+    if not exists:
         return {"error": f"Сотрудник '{name}' не найден"}
 
-    statuses = _load_statuses()
     prev_status = statuses.get(name, {}).get("status", STATUS_ACTIVE)
 
     statuses[name] = {
@@ -136,11 +168,10 @@ def set_rating(name: str, rating: int) -> dict:
     if not 0 <= rating <= 100:
         return {"error": "Рейтинг должен быть от 0 до 100"}
 
-    agent_file = MEMBERS_DIR / f"{name}.agent.md"
-    if not agent_file.exists():
+    exists, statuses = _validate_agent(name)
+    if not exists:
         return {"error": f"Сотрудник '{name}' не найден"}
 
-    statuses = _load_statuses()
     prev = statuses.get(name, {}).get("rating", 50)
 
     statuses[name] = {
@@ -164,27 +195,13 @@ def archive_member(name: str, reason: str = "") -> dict:
     Returns:
         dict с результатом
     """
-    agent_file = MEMBERS_DIR / f"{name}.agent.md"
-    if not agent_file.exists():
+    exists, _ = _validate_agent(name)
+    if not exists:
         return {"error": f"Сотрудник '{name}' не найден"}
 
     # Извлекаем скилы перед архивацией
-    skills = []
-    try:
-        content = agent_file.read_text(encoding="utf-8")
-        in_skills = False
-        for line in content.split("\n"):
-            if line.strip().startswith("## Скилы"):
-                in_skills = True
-                continue
-            if in_skills and line.strip().startswith("## "):
-                break
-            if in_skills:
-                m = re.match(r'^\s*-\s*`(.+?)`', line.strip())
-                if m:
-                    skills.append(m.group(1))
-    except Exception:
-        pass
+    agent_file = MEMBERS_DIR / f"{name}.agent.md"
+    skills = _extract_skills_from_file(agent_file)
 
     # Архивируем — переименовываем файл
     archive_dir = MEMBERS_DIR / ".." / "members_archived"
@@ -225,10 +242,11 @@ def demote_member(name: str, skills_to_remove: list[str] = None) -> dict:
     Returns:
         dict с результатом
     """
-    agent_file = MEMBERS_DIR / f"{name}.agent.md"
-    if not agent_file.exists():
+    exists, _ = _validate_agent(name)
+    if not exists:
         return {"error": f"Сотрудник '{name}' не найден"}
 
+    agent_file = MEMBERS_DIR / f"{name}.agent.md"
     content = agent_file.read_text(encoding="utf-8")
     removed = []
 

@@ -1,0 +1,20 @@
+{
+  "name": "growth_marketing_mgr",
+  "version": "1.0.0",
+  "display_name": "Growth Marketing Manager",
+  "description": "Growth-маркетинг: реклама, аналитика",
+  "skills": [
+    "growth_hacking",
+    "paid_ads",
+    "analytics"
+  ],
+  "departments": [
+    "marketing"
+  ],
+  "grade": "M",
+  "tags": [
+    "marketing",
+    "growth"
+  ],
+  "icon": "📈"
+}

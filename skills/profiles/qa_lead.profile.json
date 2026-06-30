@@ -1,0 +1,20 @@
+{
+  "name": "qa_lead",
+  "version": "1.0.0",
+  "display_name": "QA Lead",
+  "description": "Глава QA: стратегия, метрики, координация",
+  "skills": [
+    "test_strategy",
+    "quality_metrics",
+    "team_coordination"
+  ],
+  "departments": [
+    "qa"
+  ],
+  "grade": "S",
+  "tags": [
+    "qa",
+    "leadership"
+  ],
+  "icon": "👔"
+}

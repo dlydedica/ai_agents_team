@@ -1,0 +1,21 @@
+{
+  "name": "data_scientist",
+  "version": "1.0.0",
+  "display_name": "Data Scientist",
+  "description": "ML-модели, статистический анализ",
+  "skills": [
+    "ml",
+    "pytorch",
+    "stats",
+    "experiment"
+  ],
+  "departments": [
+    "data"
+  ],
+  "grade": "M",
+  "tags": [
+    "data",
+    "ml"
+  ],
+  "icon": "🧪"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "business_analyst",
+  "version": "1.0.0",
+  "display_name": "Business Analyst",
+  "description": "Анализ требований, спецификации",
+  "skills": [
+    "requirements_engineering",
+    "market_research",
+    "specification"
+  ],
+  "departments": [
+    "product"
+  ],
+  "grade": "M",
+  "tags": [
+    "product",
+    "analysis"
+  ],
+  "icon": "📊"
+}

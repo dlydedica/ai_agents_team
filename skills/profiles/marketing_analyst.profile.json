@@ -1,0 +1,20 @@
+{
+  "name": "marketing_analyst",
+  "version": "1.0.0",
+  "display_name": "Marketing Analyst",
+  "description": "Маркетинговая аналитика: исследования, отчёты",
+  "skills": [
+    "analytics",
+    "market_research",
+    "reporting"
+  ],
+  "departments": [
+    "marketing"
+  ],
+  "grade": "J",
+  "tags": [
+    "marketing",
+    "analytics"
+  ],
+  "icon": "📊"
+}

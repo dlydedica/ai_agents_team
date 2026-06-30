@@ -1,0 +1,20 @@
+{
+  "name": "design_lead",
+  "version": "1.0.0",
+  "display_name": "Design Lead",
+  "description": "Глава дизайна: дизайн-системы, UX-стратегия",
+  "skills": [
+    "design_system",
+    "ux_strategy",
+    "visual_concept"
+  ],
+  "departments": [
+    "design"
+  ],
+  "grade": "S",
+  "tags": [
+    "design",
+    "leadership"
+  ],
+  "icon": "👔"
+}

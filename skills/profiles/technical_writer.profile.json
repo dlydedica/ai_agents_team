@@ -1,0 +1,20 @@
+{
+  "name": "technical_writer",
+  "version": "1.0.0",
+  "display_name": "Technical Writer",
+  "description": "Техническая документация",
+  "skills": [
+    "tech_writing",
+    "api_docs",
+    "markdown"
+  ],
+  "departments": [
+    "docs"
+  ],
+  "grade": "S",
+  "tags": [
+    "docs",
+    "writing"
+  ],
+  "icon": "👔"
+}

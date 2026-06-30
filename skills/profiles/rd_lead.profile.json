@@ -1,0 +1,20 @@
+{
+  "name": "rd_lead",
+  "version": "1.0.0",
+  "display_name": "R&D Lead",
+  "description": "Глава R&D: технологический форсайт, инновации",
+  "skills": [
+    "tech_watch",
+    "innovation_mgmt",
+    "feasibility"
+  ],
+  "departments": [
+    "rd"
+  ],
+  "grade": "S",
+  "tags": [
+    "research",
+    "leadership"
+  ],
+  "icon": "👔"
+}

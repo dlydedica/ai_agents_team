@@ -143,16 +143,22 @@ def load_data() -> dict:
             "success_rate": success_rate,
         }
 
+    # Предвычисляем количество завершённых задач по отделам
+    completed_count_by_dept = {
+        dept_id: sum(
+            1 for t in tasks.values()
+            if dept_id in t.get("departments_completed", [])
+        )
+        for dept_id in DEPARTMENT_EMOJI
+    }
+
     dept_completion_rank = sorted(
         [
             {
                 "id": dept_id,
                 "emoji": DEPARTMENT_EMOJI.get(dept_id, "📁"),
                 "label": DEPARTMENT_LABELS.get(dept_id, dept_id),
-                "count": sum(
-                    1 for t in tasks.values()
-                    if dept_id in t.get("departments_completed", [])
-                ),
+                "count": completed_count_by_dept[dept_id],
             }
             for dept_id in DEPARTMENT_EMOJI
         ],
@@ -175,10 +181,7 @@ def load_data() -> dict:
                     if t.get("current_department") == dept_id
                     and t.get("status") == "in_progress"
                 ),
-                "completed_count": sum(
-                    1 for t in tasks.values()
-                    if dept_id in t.get("departments_completed", [])
-                ),
+                "completed_count": completed_count_by_dept[dept_id],
             }
             for dept_id in DEPARTMENT_EMOJI
         ],
@@ -206,9 +209,9 @@ def load_data() -> dict:
 async def dashboard(request: Request):
     data = load_data()
     return templates.TemplateResponse(
+        request,
         "index.html",
         {
-            "request": request,
             **data,
             "DEPARTMENT_EMOJI": DEPARTMENT_EMOJI,
             "DEPARTMENT_LABELS": DEPARTMENT_LABELS,

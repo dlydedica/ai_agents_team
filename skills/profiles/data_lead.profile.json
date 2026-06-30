@@ -1,0 +1,20 @@
+{
+  "name": "data_lead",
+  "version": "1.0.0",
+  "display_name": "Data Lead",
+  "description": "Глава данных: стратегия, архитектура пайплайнов",
+  "skills": [
+    "data_strategy",
+    "pipeline_arch",
+    "governance"
+  ],
+  "departments": [
+    "data"
+  ],
+  "grade": "S",
+  "tags": [
+    "data",
+    "leadership"
+  ],
+  "icon": "👔"
+}

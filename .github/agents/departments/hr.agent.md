@@ -53,6 +53,17 @@ argument-hint: "Опишите HR-задачу (отбалансируй, уво
 ### "Проверь здоровье"
 → `python team.py hr balance` + `python team.py hr status`
 
+## Grade-Based Permission System (ADR-003)
+Твой отдел использует систему грейдов:
+- **Junior (J):** [read, search, edit] — без execute
+- **Middle (M):** [read, search, edit, execute]
+- **Senior (S):** [read, search, edit, execute]
+- **Lead (L):** [read, search, edit, execute, web]
+- **Talent Scout (Finley, Middle):** +web для исследований рынка
+При создании новых сотрудников (`python team.py hr hire`) указывай грейд (J/M/S/L).
+Tools назначаются автоматически по грейду.
+Проверка: `python team.py validate-permissions`
+
 ## Правила
 - Всегда показывай результат после каждого действия
 - Если нужно — предлагай следующие шаги

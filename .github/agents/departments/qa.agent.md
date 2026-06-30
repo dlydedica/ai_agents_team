@@ -1,4 +1,5 @@
 ---
+name: "🧪 QA — QA Lead"
 description: "Head of QA — тестирование, code review, автотесты, контроль качества"
 tools: [read, search, edit, execute]
 user-invocable: false
@@ -11,6 +12,15 @@ argument-hint: "Code and implementation notes to review and test..."
 ## Вход (Handoff from Development)
 - `src/` — исходный код
 - `tests/unit/` — unit-тесты
+
+## Grade-Based Permission System (ADR-003)
+Твой отдел использует систему грейдов:
+- **Junior (J):** [read, search, edit] — без execute
+- **Middle (M):** [read, search, edit, execute]
+- **Senior (S):** [read, search, edit, execute]
+- **Lead (L):** [read, search, edit, execute, web]
+- **Manual Tester (Sydney):** [read, search, edit] — без execute
+Проверка: `python team.py validate-permissions`
 
 ## Что сделать
 1. Прочитай `departments/qa/README.md`

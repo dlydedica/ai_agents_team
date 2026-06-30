@@ -1,0 +1,20 @@
+{
+  "name": "frontend_junior",
+  "version": "1.0.0",
+  "display_name": "Junior Frontend Developer",
+  "description": "Простые UI-компоненты, багфиксы",
+  "skills": [
+    "html_css",
+    "js_ts",
+    "responsive"
+  ],
+  "departments": [
+    "development"
+  ],
+  "grade": "J",
+  "tags": [
+    "frontend",
+    "junior"
+  ],
+  "icon": "💻"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "compliance_officer",
+  "version": "1.0.0",
+  "display_name": "Compliance Officer",
+  "description": "Соответствие стандартам: GDPR, SOC2, ISO27001",
+  "skills": [
+    "gdpr",
+    "soc2",
+    "iso27001",
+    "risk_mgmt"
+  ],
+  "departments": [
+    "security"
+  ],
+  "grade": "M",
+  "tags": [
+    "security",
+    "compliance"
+  ],
+  "icon": "📋"
+}

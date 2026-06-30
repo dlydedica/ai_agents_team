@@ -1,0 +1,20 @@
+{
+  "name": "innovation_analyst",
+  "version": "1.0.0",
+  "display_name": "Innovation Analyst",
+  "description": "Анализ рынка, трендов, cost-benefit",
+  "skills": [
+    "market_research",
+    "trend_analysis",
+    "cost_benefit"
+  ],
+  "departments": [
+    "rd"
+  ],
+  "grade": "M",
+  "tags": [
+    "research",
+    "innovation"
+  ],
+  "icon": "💡"
+}

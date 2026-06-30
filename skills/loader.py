@@ -80,20 +80,25 @@ def install_from_git(url: str, name: str = "", branch: str = "main") -> dict:
 
     # Сканируем установленные скилы
     installed = _scan_external_skills(target_dir)
-    registry = _load_registry()
-    registry["sources"].append({
+    _register_source({
         "name": name,
         "type": "git",
         "url": url,
         "branch": branch,
         "path": str(target_dir.relative_to(SKILLS_DIR)),
-    })
-    for s in installed:
+    }, installed)
+
+    return {"success": True, "source": name, "skills_installed": installed}
+
+
+def _register_source(source_entry: dict, installed_skills: list[str]):
+    """Регистрирует источник скилов в реестре и добавляет скилы."""
+    registry = _load_registry()
+    registry["sources"].append(source_entry)
+    for s in installed_skills:
         if s not in registry["skills"]:
             registry["skills"].append(s)
     _save_registry(registry)
-
-    return {"success": True, "source": name, "skills_installed": installed}
 
 
 def install_from_pip(package_name: str) -> dict:
@@ -130,16 +135,11 @@ def install_from_pip(package_name: str) -> dict:
     except Exception:
         installed = []
 
-    registry = _load_registry()
-    registry["sources"].append({
+    _register_source({
         "name": package_name,
         "type": "pip",
         "path": str(EXTERNAL_DIR / package_name),
-    })
-    for s in installed:
-        if s not in registry["skills"]:
-            registry["skills"].append(s)
-    _save_registry(registry)
+    }, installed)
 
     return {"success": True, "source": package_name, "skills_installed": installed}
 
@@ -170,17 +170,12 @@ def install_from_symlink(source_path: str, name: str = "") -> dict:
         return {"error": f"Не удалось создать симлинк: {e}"}
 
     installed = _scan_external_skills(target)
-    registry = _load_registry()
-    registry["sources"].append({
+    _register_source({
         "name": name,
         "type": "symlink",
         "source_path": str(src),
         "path": str(target.relative_to(SKILLS_DIR)),
-    })
-    for s in installed:
-        if s not in registry["skills"]:
-            registry["skills"].append(s)
-    _save_registry(registry)
+    }, installed)
 
     return {"success": True, "source": name, "skills_installed": installed}
 

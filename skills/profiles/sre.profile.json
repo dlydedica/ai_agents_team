@@ -1,0 +1,20 @@
+{
+  "name": "sre",
+  "version": "1.0.0",
+  "display_name": "SRE",
+  "description": "Надёжность сервисов: SLO/SLI, инциденты",
+  "skills": [
+    "reliability",
+    "slo_sli",
+    "incident_response"
+  ],
+  "departments": [
+    "devops"
+  ],
+  "grade": "M",
+  "tags": [
+    "devops",
+    "sre"
+  ],
+  "icon": "🛡️"
+}

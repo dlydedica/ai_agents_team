@@ -57,6 +57,13 @@ def _load_tasks() -> dict:
                 pass
         return {}
 
+def _get_task(task_id: str) -> tuple[dict, dict] | tuple[None, dict]:
+    """Загружает задачи и возвращает (task, all_tasks) или (None, error_dict)."""
+    tasks = _load_tasks()
+    task = tasks.get(task_id)
+    if not task:
+        return None, {"error": f"Задача {task_id} не найдена"}
+    return task, tasks
 
 def _save_tasks(tasks: dict):
     _ensure_storage()
@@ -125,13 +132,9 @@ def assign_to_department(task_id: str, department: str) -> Optional[dict]:
     if not _validate_department(department):
         return {"error": f"Неизвестный отдел: {department}"}
 
-    tasks = _load_tasks()
-    task = tasks.get(task_id)
-    if not task:
-        return {"error": f"Задача {task_id} не найдена"}
-
-    if department not in task["departments_plan"]:
-        return {"error": f"Отдел {department} не в плане задачи {task_id}"}
+    task, tasks = _validate_and_get_task_plain(task_id, department)
+    if task is None:
+        return tasks
 
     task["current_department"] = department
     task["status"] = "in_progress"
@@ -145,15 +148,22 @@ def assign_to_department(task_id: str, department: str) -> Optional[dict]:
     return task
 
 
+def _validate_and_get_task_plain(task_id: str, department: str) -> tuple[dict | None, dict | None]:
+    """Валидирует отдел и возвращает задачу. Возвращает (task, tasks) или (None, error).
+    Без @_with_lock — вызывается только из уже заблокированных функций."""
+    task, tasks = _get_task(task_id)
+    if task is None:
+        return None, tasks
+    if department not in task["departments_plan"]:
+        return None, {"error": f"Отдел {department} не в плане задачи {task_id}"}
+    return task, tasks
+
+
 @_with_lock
 def complete_department(task_id: str, department: str, artifacts: dict = None) -> Optional[dict]:
-    tasks = _load_tasks()
-    task = tasks.get(task_id)
-    if not task:
-        return {"error": f"Задача {task_id} не найдена"}
-
-    if department not in task["departments_plan"]:
-        return {"error": f"Отдел {department} не в плане задачи"}
+    task, tasks = _validate_and_get_task_plain(task_id, department)
+    if task is None:
+        return tasks
 
     if department in task["departments_completed"]:
         return {"error": f"Отдел {department} уже завершил работу"}
@@ -188,16 +198,12 @@ def complete_department(task_id: str, department: str, artifacts: dict = None) -
 
 @_with_lock
 def handoff(task_id: str, from_dept: str, to_dept: str, artifacts: dict = None) -> Optional[dict]:
-    tasks = _load_tasks()
-    task = tasks.get(task_id)
-    if not task:
-        return {"error": f"Задача {task_id} не найдена"}
-
     if not _validate_department(from_dept) or not _validate_department(to_dept):
         return {"error": "Неизвестный отдел"}
 
-    if from_dept not in task["departments_plan"]:
-        return {"error": f"Отдел {from_dept} не в плане задачи"}
+    task, tasks = _validate_and_get_task_plain(task_id, from_dept)
+    if task is None:
+        return tasks
 
     if to_dept not in task["departments_plan"]:
         return {"error": f"Отдел {to_dept} не в плане задачи"}
@@ -220,15 +226,14 @@ def handoff(task_id: str, from_dept: str, to_dept: str, artifacts: dict = None) 
 
 
 def get_task(task_id: str) -> Optional[dict]:
-    tasks = _load_tasks()
-    return tasks.get(task_id)
+    task, _ = _get_task(task_id)
+    return task
 
 
 def get_task_timeline(task_id: str) -> Optional[list]:
     """Получить хронологию событий задачи."""
-    tasks = _load_tasks()
-    task = tasks.get(task_id)
-    if not task:
+    task, _ = _get_task(task_id)
+    if task is None:
         return None
     return task.get("events", [])
 
@@ -245,10 +250,9 @@ def get_all_tasks() -> dict:
 
 @_with_lock
 def log_event(task_id: str, event_type: str, detail: str) -> Optional[dict]:
-    tasks = _load_tasks()
-    task = tasks.get(task_id)
-    if not task:
-        return {"error": f"Задача {task_id} не найдена"}
+    task, tasks = _get_task(task_id)
+    if task is None:
+        return tasks
     now = datetime.now(timezone.utc).isoformat()
     task["updated_at"] = now
     task["events"].append({"time": now, "type": event_type, "detail": detail})
@@ -261,10 +265,9 @@ def log_event(task_id: str, event_type: str, detail: str) -> Optional[dict]:
 
 @_with_lock
 def escalate(task_id: str, reason: str) -> Optional[dict]:
-    tasks = _load_tasks()
-    task = tasks.get(task_id)
-    if not task:
-        return {"error": f"Задача {task_id} не найдена"}
+    task, tasks = _get_task(task_id)
+    if task is None:
+        return tasks
     task["status"] = "escalated"
     task["updated_at"] = datetime.now(timezone.utc).isoformat()
     task["events"].append({

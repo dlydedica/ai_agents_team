@@ -1,0 +1,20 @@
+{
+  "name": "research_engineer",
+  "version": "1.0.0",
+  "display_name": "Research Engineer",
+  "description": "Прототипирование, бенчмаркинг, исследование API",
+  "skills": [
+    "prototyping",
+    "benchmarking",
+    "api_research"
+  ],
+  "departments": [
+    "rd"
+  ],
+  "grade": "M",
+  "tags": [
+    "research",
+    "engineering"
+  ],
+  "icon": "🔬"
+}

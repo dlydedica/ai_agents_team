@@ -1,5 +1,8 @@
 ---
+alias: "Backend Developer"
 description: "Backend Developer — Python, FastAPI, SQLAlchemy, API"
+grade: "M"
+department: development
 tools: [read, search, edit, execute]
 user-invocable: false
 ---

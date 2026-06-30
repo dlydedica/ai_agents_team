@@ -1,5 +1,8 @@
 ---
+alias: "Fullstack Developer"
 description: "Fullstack Developer — сквозная разработка frontend + backend"
+grade: "M"
+department: development
 tools: [read, search, edit, execute]
 user-invocable: false
 ---

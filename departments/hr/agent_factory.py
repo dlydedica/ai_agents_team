@@ -27,10 +27,58 @@ HIRE_CRITERIA = {
     "uncovered_threshold": 5,       # если >5 скилов без сотрудника
 }
 
+# ── Grade-Based Permission System (ADR-003) ───────────────────────────────
+GRADE_TOOLS: dict[str, list[str]] = {
+    "J": ["read", "search", "edit"],
+    "M": ["read", "search", "edit", "execute"],
+    "S": ["read", "search", "edit", "execute"],
+    "L": ["read", "search", "edit", "execute", "web"],
+}
+
+# Исключения по типу роли
+ROLE_EXCEPTIONS: dict[str, callable] = {
+    "read_only": lambda _: ["read", "search"],                    # compliance
+    "manual": lambda t: [x for x in t if x != "execute"],         # manual tester
+    "research": lambda t: list(set(t) | {"web"}),                  # rd, talent scout
+    "market": lambda t: list(set(t) | {"web"}),                    # product, marketing
+}
+
+# Роли-исключения определяются по role_key
+READ_ONLY_KEYS = {"compliance", "compliance_officer"}
+RESEARCH_KEYS = {"rd", "research", "talent_scout", "innovation", "research_engineer"}
+MANUAL_KEYS = {"manual", "manual_tester", "tester"}
+MARKET_KEYS = {"product", "marketing", "content", "growth", "brand", "market"}
+
+
+def _resolve_tools(grade: str, role_key: str) -> list[str]:
+    """Определить tools для сотрудника по грейду и роли."""
+    grade = grade.upper()
+    base = list(GRADE_TOOLS.get(grade, GRADE_TOOLS["M"]))
+
+    # Read-only — самый высокий приоритет
+    if any(k in role_key for k in READ_ONLY_KEYS):
+        return ROLE_EXCEPTIONS["read_only"](base)
+
+    manual = any(k in role_key for k in MANUAL_KEYS)
+    research = any(k in role_key for k in RESEARCH_KEYS)
+    market = any(k in role_key for k in MARKET_KEYS)
+
+    tools = set(base)
+    if manual:
+        tools.discard("execute")
+    if research:
+        tools.add("web")
+    if market:
+        tools.add("web")
+
+    return sorted(tools)
+
+
 AGENT_TEMPLATE = """---
-description: "{role} — {description}"
+alias: "{role}"
+grade: "M"
+department: "{dept}"
 tools: [read, search, edit, execute]
-user-invocable: false
 ---
 
 # {emoji} {role}
@@ -251,11 +299,12 @@ def suggest_new_agent() -> dict:
     }
 
 
-def create_agent(suggestion: dict) -> dict:
-    """Создаёт нового сотрудника (.agent.md файл).
+def create_agent(suggestion: dict, grade: str = "M") -> dict:
+    """Создаёт нового сотрудника (.agent.md файл) с валидацией permissions.
 
     Args:
         suggestion: результат suggest_new_agent()
+        grade: грейд сотрудника (J/M/S/L) — по умолчанию Middle
 
     Returns:
         dict с результатом
@@ -263,12 +312,20 @@ def create_agent(suggestion: dict) -> dict:
     if "error" in suggestion:
         return suggestion
 
+    if grade.upper() not in ("J", "M", "S", "L"):
+        return {"error": f"Некорректный грейд: {grade}. Допустимые: J, M, S, L"}
+
     name = suggestion["name"]
     role = suggestion["role"]
     emoji = suggestion["emoji"]
     dept = suggestion["department"]
     skills = suggestion["skills"]
     description = suggestion["description"]
+
+    # Определяем tools по грейду и роли
+    grade_key = grade.upper()
+    role_key = name.split("-")[0].lower()  # извлекаем ключ роли из имени
+    tools = _resolve_tools(grade_key, role_key)
 
     # Если имя занято — добавляем счётчик
     counter = 1
@@ -293,15 +350,29 @@ def create_agent(suggestion: dict) -> dict:
         "- `docs/` — документация",
     ])
 
+    # Сериализуем tools для YAML
+    tools_yaml = ", ".join(tools)
+
     # Генерируем содержимое
     content = AGENT_TEMPLATE.format(
         role=role,
-        description=description,
+        dept=dept.lower(),
         emoji=emoji,
         department=dept,
         skills=skills_text,
         responsibilities=responsibilities,
         outputs=outputs,
+    )
+
+    # Подменяем tools в frontmatter на корректные для грейда
+    content = content.replace(
+        "tools: [read, search, edit, execute]",
+        f"tools: [{tools_yaml}]"
+    )
+    # Подменяем grade
+    content = content.replace(
+        'grade: "M"',
+        f'grade: "{grade_key}"'
     )
 
     # Сохраняем файл
@@ -317,6 +388,8 @@ def create_agent(suggestion: dict) -> dict:
         "file": str(agent_file.relative_to(REPO_DIR)),
         "skills": skills,
         "department": dept,
+        "grade": grade_key,
+        "tools": tools,
         "reasons": suggestion.get("reasons", []),
     }
 
@@ -335,6 +408,14 @@ def rebalance_skills(dry_run: bool = False) -> dict:
     reports = analyze_balance()
     changes = []
 
+    def _change_entry(member, report, to_remove):
+        return {
+            "member": member.name,
+            "department": report.department,
+            "remove": to_remove,
+            "keep_count": member.skill_count - len(to_remove),
+        }
+
     for report in reports:
         # Удаляем дубликаты у клонов (-v2, -v3)
         for m in report.members:
@@ -345,12 +426,7 @@ def rebalance_skills(dry_run: bool = False) -> dict:
             if excess <= 0:
                 continue
             to_remove = m.skills[-excess:]
-            changes.append({
-                "member": m.name,
-                "department": report.department,
-                "remove": to_remove,
-                "keep_count": m.skill_count - len(to_remove),
-            })
+            changes.append(_change_entry(m, report, to_remove))
             if not dry_run:
                 agent_file = MEMBERS_DIR / f"{m.name}.agent.md"
                 if agent_file.exists():
@@ -369,12 +445,7 @@ def rebalance_skills(dry_run: bool = False) -> dict:
                 continue
 
             to_remove = m.skills[-excess:]  # последние N скилов
-            changes.append({
-                "member": m.name,
-                "department": report.department,
-                "remove": to_remove,
-                "keep_count": m.skill_count - len(to_remove),
-            })
+            changes.append(_change_entry(m, report, to_remove))
 
             if not dry_run:
                 # Читаем файл сотрудника

@@ -1,0 +1,20 @@
+{
+  "name": "brand_designer",
+  "version": "1.0.0",
+  "display_name": "Brand Designer",
+  "description": "Бренд-дизайн: айдентика, визуальный стиль",
+  "skills": [
+    "brand_identity",
+    "visual_design",
+    "marketing_materials"
+  ],
+  "departments": [
+    "marketing"
+  ],
+  "grade": "M",
+  "tags": [
+    "marketing",
+    "design"
+  ],
+  "icon": "🎨"
+}

@@ -1,0 +1,21 @@
+{
+  "name": "hr_analyst",
+  "version": "1.0.0",
+  "display_name": "HR Analyst",
+  "description": "HR-аналитика: метрики, отчёты, визуализация",
+  "skills": [
+    "analytics",
+    "reporting",
+    "metrics",
+    "data_viz"
+  ],
+  "departments": [
+    "hr"
+  ],
+  "grade": "M",
+  "tags": [
+    "hr",
+    "analytics"
+  ],
+  "icon": "📊"
+}

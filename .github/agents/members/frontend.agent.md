@@ -1,5 +1,8 @@
 ---
+alias: "Frontend Developer"
 description: "Frontend Developer — Flutter/Dart, React, TypeScript, UI"
+grade: "M"
+department: development
 tools: [read, search, edit, execute]
 user-invocable: false
 ---

@@ -45,6 +45,7 @@
 **Tech Lead (Lead):** Head of Development — управление командой, процессы
 
 ---
+- python (5)
 
 ## 🧪 QA
 

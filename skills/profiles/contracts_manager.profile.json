@@ -1,0 +1,20 @@
+{
+  "name": "contracts_manager",
+  "version": "1.0.0",
+  "display_name": "Contracts Manager",
+  "description": "Управление контрактами: NDA, SLA",
+  "skills": [
+    "contract_drafting",
+    "nda",
+    "sla"
+  ],
+  "departments": [
+    "legal"
+  ],
+  "grade": "M",
+  "tags": [
+    "legal",
+    "contracts"
+  ],
+  "icon": "📋"
+}

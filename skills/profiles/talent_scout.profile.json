@@ -1,0 +1,20 @@
+{
+  "name": "talent_scout",
+  "version": "1.0.0",
+  "display_name": "Talent Scout",
+  "description": "Поиск талантов, профилирование ролей",
+  "skills": [
+    "role_design",
+    "org_design",
+    "competency_modeling"
+  ],
+  "departments": [
+    "hr"
+  ],
+  "grade": "M",
+  "tags": [
+    "hr",
+    "recruitment"
+  ],
+  "icon": "🔍"
+}

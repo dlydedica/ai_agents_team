@@ -1,0 +1,20 @@
+{
+  "name": "backend_junior",
+  "version": "1.0.0",
+  "display_name": "Junior Backend Developer",
+  "description": "Простые endpoint'ы, SQL-запросы",
+  "skills": [
+    "python",
+    "sql",
+    "rest_api"
+  ],
+  "departments": [
+    "development"
+  ],
+  "grade": "J",
+  "tags": [
+    "backend",
+    "junior"
+  ],
+  "icon": "🖥️"
+}

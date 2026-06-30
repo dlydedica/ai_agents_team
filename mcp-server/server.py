@@ -19,12 +19,18 @@ MCP-сервер координации AI Agents Team.
 import argparse
 import json
 import sys
+from pathlib import Path
 
 # Принудительная UTF-8 кодировка для stdout/stderr (особенно важно на Windows)
 if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 if sys.stderr and hasattr(sys.stderr, 'reconfigure'):
     sys.stderr.reconfigure(encoding='utf-8')
+
+# Добавляем корень проекта в sys.path для импорта memory и других модулей
+_project_root = str(Path(__file__).resolve().parent.parent)
+if _project_root not in sys.path:
+    sys.path.insert(0, _project_root)
 
 from mcp.server.fastmcp import FastMCP
 
@@ -56,6 +62,19 @@ mcp = FastMCP(
 # ──────────────────────────────────────────────
 # Инструменты
 # ──────────────────────────────────────────────
+
+ERROR_NOT_FOUND = '{"error": "❌ Задача не найдена"}'
+
+
+def _json_result(result, not_found_msg=ERROR_NOT_FOUND, empty_msg=None):
+    """Сериализует результат в JSON или возвращает сообщение об ошибке."""
+    if result is None:
+        return not_found_msg
+    if empty_msg is not None and not result:
+        return empty_msg
+    if not result:
+        return not_found_msg
+    return json.dumps(result, ensure_ascii=False, indent=2)
 
 
 @mcp.tool(
@@ -102,9 +121,7 @@ def assign_to_department(task_id: str, department: str) -> str:
         department: Название отдела
     """
     result = store_assign(task_id, department)
-    if not result:
-        return '{"error": "❌ Задача не найдена"}'
-    return json.dumps(result, ensure_ascii=False, indent=2)
+    return _json_result(result)
 
 
 @mcp.tool(
@@ -151,9 +168,7 @@ def handoff(task_id: str, from_department: str, to_department: str, artifacts: d
         artifacts: Артефакты для передачи
     """
     result = store_handoff(task_id, from_department, to_department, artifacts)
-    if not result:
-        return '{"error": "❌ Задача не найдена"}'
-    return json.dumps(result, ensure_ascii=False, indent=2)
+    return _json_result(result)
 
 
 @mcp.tool(
@@ -167,9 +182,7 @@ def get_task_status(task_id: str) -> str:
         task_id: ID задачи
     """
     result = store_get_task(task_id)
-    if not result:
-        return '{"error": "❌ Задача не найдена"}'
-    return json.dumps(result, ensure_ascii=False, indent=2)
+    return _json_result(result)
 
 
 @mcp.tool(
@@ -183,11 +196,7 @@ def get_task_timeline(task_id: str) -> str:
         task_id: ID задачи
     """
     result = store_get_timeline(task_id)
-    if result is None:
-        return '{"error": "❌ Задача не найдена"}'
-    if not result:
-        return '{"message": "📭 Нет событий"}'
-    return json.dumps(result, ensure_ascii=False, indent=2)
+    return _json_result(result, empty_msg='{"message": "📭 Нет событий"}')
 
 
 @mcp.tool(
@@ -197,9 +206,7 @@ def get_task_timeline(task_id: str) -> str:
 def list_active_tasks() -> str:
     """Получить список активных задач."""
     result = store_list_active()
-    if not result:
-        return '{"message": "📭 Нет активных задач"}'
-    return json.dumps(result, ensure_ascii=False, indent=2)
+    return _json_result(result, empty_msg='{"message": "📭 Нет активных задач"}')
 
 
 @mcp.tool(
@@ -232,9 +239,7 @@ def escalate(task_id: str, reason: str) -> str:
         reason: Причина эскалации
     """
     result = store_escalate(task_id, reason)
-    if not result:
-        return '{"error": "❌ Задача не найдена"}'
-    return json.dumps(result, ensure_ascii=False, indent=2)
+    return _json_result(result)
 
 
 # ──────────────────────────────────────────────

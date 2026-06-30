@@ -1,0 +1,20 @@
+{
+  "name": "ld_specialist",
+  "version": "1.0.0",
+  "display_name": "L&D Specialist",
+  "description": "Обучение и развитие: программы, онбординг",
+  "skills": [
+    "training_design",
+    "curriculum",
+    "knowledge_base"
+  ],
+  "departments": [
+    "hr"
+  ],
+  "grade": "M",
+  "tags": [
+    "hr",
+    "learning"
+  ],
+  "icon": "🎓"
+}

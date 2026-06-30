@@ -73,6 +73,27 @@ def _print_step(emoji: str, message: str):
     print(f"  {emoji} {message}")
 
 
+def _handle_run_error(e: Exception) -> bool:
+    """Обрабатывает исключение subprocess.run: печатает ошибку и возвращает False."""
+    _print_step("❌", f"Ошибка: {e}")
+    return False
+
+
+def _run_git_command(cmd: list[str], cwd: Path, success_msg: str, fail_msg: str) -> bool:
+    """Выполняет git-команду с единой обработкой ошибок."""
+    try:
+        result = subprocess.run(
+            cmd, cwd=cwd, capture_output=True, text=True, timeout=60,
+        )
+        if result.returncode == 0:
+            _print_step("✅", success_msg)
+            return True
+        _print_step("⚠️", f"{fail_msg}: {result.stderr[:200]}")
+        return False
+    except Exception as e:
+        return _handle_run_error(e)
+
+
 def _find_team_in_project(target: Path) -> tuple[Path | None, str]:
     """Находит ai_agents_team в целевом проекте.
 
@@ -121,21 +142,12 @@ def _update_submodule(target: Path, team_path: Path, dry_run: bool = False) -> b
         _print_step("🔍", "[dry-run] git submodule update --remote ai_agents_team")
         return True
 
-    try:
-        result = subprocess.run(
-            ["git", "submodule", "update", "--remote", "--init", str(team_path.name)],
-            cwd=target,
-            capture_output=True, text=True, timeout=60,
-        )
-        if result.returncode == 0:
-            _print_step("✅", "Submodule обновлён")
-            return True
-        else:
-            _print_step("⚠️", f"Не удалось обновить submodule: {result.stderr[:200]}")
-            return False
-    except Exception as e:
-        _print_step("❌", f"Ошибка: {e}")
-        return False
+    return _run_git_command(
+        ["git", "submodule", "update", "--remote", "--init", str(team_path.name)],
+        cwd=target,
+        success_msg="Submodule обновлён",
+        fail_msg="Не удалось обновить submodule",
+    )
 
 
 def _update_git_repo(team_path: Path, dry_run: bool = False) -> bool:
@@ -145,23 +157,14 @@ def _update_git_repo(team_path: Path, dry_run: bool = False) -> bool:
         _print_step("🔍", f"[dry-run] git pull в {team_path}")
         return True
 
-    try:
-        # stash локальных изменений, если есть
-        subprocess.run(["git", "stash"], cwd=team_path, capture_output=True, timeout=30)
-        result = subprocess.run(
-            ["git", "pull", "--ff-only"],
-            cwd=team_path,
-            capture_output=True, text=True, timeout=60,
-        )
-        if result.returncode == 0:
-            _print_step("✅", "Репозиторий обновлён")
-            return True
-        else:
-            _print_step("⚠️", f"git pull: {result.stderr[:200]}")
-            return False
-    except Exception as e:
-        _print_step("❌", f"Ошибка: {e}")
-        return False
+    # stash локальных изменений, если есть
+    subprocess.run(["git", "stash"], cwd=team_path, capture_output=True, timeout=30)
+    return _run_git_command(
+        ["git", "pull", "--ff-only"],
+        cwd=team_path,
+        success_msg="Репозиторий обновлён",
+        fail_msg="git pull",
+    )
 
 
 def _update_copy(team_path: Path, dry_run: bool = False) -> bool:

@@ -1,0 +1,22 @@
+{
+  "name": "ui_ux_designer",
+  "version": "1.0.0",
+  "display_name": "UI/UX Designer",
+  "description": "Дизайн пользовательских интерфейсов",
+  "skills": [
+    "ui_design",
+    "ux_research",
+    "figma",
+    "prototyping"
+  ],
+  "departments": [
+    "design"
+  ],
+  "grade": "M",
+  "tags": [
+    "design",
+    "ui",
+    "ux"
+  ],
+  "icon": "🎯"
+}

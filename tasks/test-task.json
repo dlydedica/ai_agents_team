@@ -1,0 +1,10 @@
+{
+  "task": {
+    "title": "Тестовый REST API микросервис",
+    "description": "Создать простой REST API микросервис на FastAPI с одним endpoint /health",
+    "context": {
+      "stack": ["python", "fastapi", "rest"],
+      "type": "new_project"
+    }
+  }
+}

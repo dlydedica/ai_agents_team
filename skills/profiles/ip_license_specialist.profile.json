@@ -1,0 +1,20 @@
+{
+  "name": "ip_license_specialist",
+  "version": "1.0.0",
+  "display_name": "IP & License Specialist",
+  "description": "Управление лицензиями и интеллектуальной собственностью",
+  "skills": [
+    "oss_licenses",
+    "ip_mgmt",
+    "compatibility"
+  ],
+  "departments": [
+    "legal"
+  ],
+  "grade": "M",
+  "tags": [
+    "legal",
+    "licenses"
+  ],
+  "icon": "📄"
+}

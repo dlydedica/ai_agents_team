@@ -1,0 +1,21 @@
+{
+  "name": "manual_tester",
+  "version": "1.0.0",
+  "display_name": "Manual Tester",
+  "description": "Ручное тестирование: тест-кейсы, регрессия",
+  "skills": [
+    "test_design",
+    "exploratory",
+    "bug_reporting"
+  ],
+  "departments": [
+    "qa"
+  ],
+  "grade": "M",
+  "tags": [
+    "qa",
+    "testing",
+    "manual"
+  ],
+  "icon": "🧪"
+}

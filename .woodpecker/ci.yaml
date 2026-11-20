@@ -1,0 +1,38 @@
+when:
+  - event: [push, pull_request]
+
+steps:
+  install:
+    image: python:3.11-slim
+    environment:
+      PIP_CACHE_DIR: /woodpecker-cache/pip
+    commands:
+      - |
+        set -eu
+        python -m venv .ci-venv
+        for attempt in 1 2 3; do
+          if .ci-venv/bin/python -m pip install --disable-pip-version-check --no-input \
+              --retries 10 --timeout 60 -e . mcp portalocker pytest flake8 fastapi uvicorn jinja2; then
+            exit 0
+          fi
+          echo "pip install failed (attempt $attempt), retrying in 10s" >&2
+          sleep 10
+        done
+        exit 1
+
+  quality:
+    image: python:3.11-slim
+    depends_on: [install]
+    commands:
+      - export PYTHONIOENCODING=utf-8
+      - .ci-venv/bin/python team.py validate
+      - .ci-venv/bin/python -c "import sys; sys.path.insert(0, '.'); from team import list_departments, list_workflows, list_interactions; print('team.py импортируется')"
+      - .ci-venv/bin/python -c "import sys; sys.path.insert(0, '.'); from dashboard.app import app; print('dashboard импортируется')"
+
+  mcp-tests:
+    image: python:3.11-slim
+    depends_on: [quality]
+    commands:
+      - export PYTHONIOENCODING=utf-8
+      - cd mcp-server && ../.ci-venv/bin/python test_task_store.py
+      - cd mcp-server && ../.ci-venv/bin/python test_server.py
